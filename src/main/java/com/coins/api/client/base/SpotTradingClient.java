@@ -17,6 +17,7 @@ import com.coins.api.model.TradeFeeRequest;
 import com.coins.api.model.TradeFeeResponse;
 import com.coins.api.model.TradeVo;
 import com.coins.api.util.ValidationUtil;
+import com.coins.api.util.UrlBuilder;
 import com.fasterxml.jackson.core.type.TypeReference;
 
 import javax.validation.Valid;
@@ -57,26 +58,16 @@ public class SpotTradingClient {
         // Validate request parameters with English locale
         ValidationUtil.validate(request, Locale.ENGLISH);
         
-        StringBuilder queryBuilder = new StringBuilder();
-        queryBuilder.append("symbol=").append(request.getSymbol());
+        // Use optimized UrlBuilder for query string construction
+        UrlBuilder urlBuilder = UrlBuilder.create("")
+            .addParameter("symbol", request.getSymbol())
+            .addParameterIf(request.getOrderId() != null && request.getOrderId() > 0, "orderId", request.getOrderId())
+            .addParameterIf(request.getStartTime() != null && request.getStartTime() > 0, "startTime", request.getStartTime())
+            .addParameterIf(request.getEndTime() != null && request.getEndTime() > 0, "endTime", request.getEndTime())
+            .addParameterIf(request.getFromId() != null && request.getFromId() > 0, "fromId", request.getFromId())
+            .addParameterIf(request.getLimit() != null && request.getLimit() > 0, "limit", request.getLimit());
         
-        if (request.getOrderId() != null && request.getOrderId() > 0) {
-            queryBuilder.append("&orderId=").append(request.getOrderId());
-        }
-        if (request.getStartTime() != null && request.getStartTime() > 0) {
-            queryBuilder.append("&startTime=").append(request.getStartTime());
-        }
-        if (request.getEndTime() != null && request.getEndTime() > 0) {
-            queryBuilder.append("&endTime=").append(request.getEndTime());
-        }
-        if (request.getFromId() != null && request.getFromId() > 0) {
-            queryBuilder.append("&fromId=").append(request.getFromId());
-        }
-        if (request.getLimit() != null && request.getLimit() > 0) {
-            queryBuilder.append("&limit=").append(request.getLimit());
-        }
-        
-        return httpClient.get(MY_TRADES_URL, queryBuilder.toString(), new TypeReference<List<TradeVo>>() {});
+        return httpClient.get(MY_TRADES_URL, urlBuilder.buildQueryString(), new TypeReference<List<TradeVo>>() {});
     }
 
     /**
@@ -101,43 +92,25 @@ public class SpotTradingClient {
     }
 
     /**
-     * Build query string for new order request
+     * Build query string for new order request using optimized UrlBuilder
      * 
      * @param request New order request object
      * @return Query string
      */
     private String buildNewOrderQueryString(NewOrderRequest request) {
-        StringBuilder queryString = new StringBuilder();
-        queryString.append("symbol=").append(request.getSymbol());
-        queryString.append("&side=").append(request.getSide());
-        queryString.append("&type=").append(request.getType());
-
-        if (request.getTimeInForce() != null) {
-            queryString.append("&timeInForce=").append(request.getTimeInForce());
-        }
-        if (request.getQuantity() != null) {
-            queryString.append("&quantity=").append(request.getQuantity());
-        }
-        if (request.getQuoteOrderQty() != null) {
-            queryString.append("&quoteOrderQty=").append(request.getQuoteOrderQty());
-        }
-        if (request.getPrice() != null) {
-            queryString.append("&price=").append(request.getPrice());
-        }
-        if (request.getNewClientOrderId() != null) {
-            queryString.append("&newClientOrderId=").append(request.getNewClientOrderId());
-        }
-        if (request.getStopPrice() != null) {
-            queryString.append("&stopPrice=").append(request.getStopPrice());
-        }
-        if (request.getNewOrderRespType() != null) {
-            queryString.append("&newOrderRespType=").append(request.getNewOrderRespType());
-        }
-        if (request.getStpFlag() != null) {
-            queryString.append("&stpFlag=").append(request.getStpFlag());
-        }
-        
-        return queryString.toString();
+        return UrlBuilder.create("")
+            .addParameter("symbol", request.getSymbol())
+            .addParameter("side", request.getSide())
+            .addParameter("type", request.getType())
+            .addParameter("timeInForce", request.getTimeInForce())
+            .addParameter("quantity", request.getQuantity())
+            .addParameter("quoteOrderQty", request.getQuoteOrderQty())
+            .addParameter("price", request.getPrice())
+            .addParameter("newClientOrderId", request.getNewClientOrderId())
+            .addParameter("stopPrice", request.getStopPrice())
+            .addParameter("newOrderRespType", request.getNewOrderRespType())
+            .addParameter("stpFlag", request.getStpFlag())
+            .buildQueryString();
     }
 
     /**

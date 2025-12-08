@@ -25,11 +25,12 @@ public class ConvertExample {
     
     public static void main(String[] args) {
         CoinsApiConfig config = CoinsApiConfig.builder()
-                                              .apiKey("your-api-key")
-                                              .secretKey("your-secret-key")
-                                              .baseUrl("https://api.pro.coins.ph")  // Use appropriate base URL
-                                              .recvWindow(5000)  // Optional: request timeout window in milliseconds
+                                              .apiKey("yjpNCpBFzMDrQKKQUChq4YhsFwnKZiNSE4Awmqn53wUPgziaIw3OerWoxeqgh0hu")
+                                              .secretKey("sWCboo8ba1LItH2bLD1AQwGnbM9gsLspJ8AlwsoCPGLMSOi3RJ96AONhl2anSGdt")
+                                              .baseUrl("https://api.9001.pl-qa.coinsxyz.me")
+                                              .recvWindow(5000)
                                               .build();
+
 
         CoinsApiClient client = new CoinsApiClient(config);
 

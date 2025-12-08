@@ -31,10 +31,10 @@ public class WalletExample {
     public static void main(String[] args) {
         // Configure the API client
         CoinsApiConfig config = CoinsApiConfig.builder()
-                                              .apiKey("your-api-key")
-                                              .secretKey("your-secret-key")
-                                              .baseUrl("https://api.pro.coins.ph")  // Use appropriate base URL
-                                              .recvWindow(5000)  // Optional: request timeout window in milliseconds
+                                              .apiKey("2Wm0LNxDhlP1JcP4OmEPxufcmNkA45dHwMBHcIKsOQg6A1BBqYygIfJhkGZ9ylh3")
+                                              .secretKey("uYJmYTOYJZt9WzYC7p1VNspDl0tehsRZXaAyHodF3Syy9iTJYeSClyHKzET91wck")
+                                              .baseUrl("https://api.9001.pl-qa.coinsxyz.me")
+                                              .recvWindow(5000)
                                               .build();
 
 

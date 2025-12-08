@@ -3,6 +3,8 @@ package com.coins.api.client.base;
 import com.coins.api.client.CoinsApiConfig;
 import com.coins.api.exception.CoinsApiException;
 import com.coins.api.util.SignatureUtils;
+import com.coins.api.util.UrlBuilder;
+import com.coins.api.util.ObjectMapperFactory;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import okhttp3.FormBody;
@@ -15,9 +17,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
-import java.io.UnsupportedEncodingException;
-import java.net.URLEncoder;
-import java.nio.charset.StandardCharsets;
 import java.util.Map;
 import java.util.TreeMap;
 import java.util.concurrent.TimeUnit;
@@ -36,7 +35,7 @@ public class HttpClient {
 
     public HttpClient(CoinsApiConfig config) {
         this.config = config;
-        this.objectMapper = new ObjectMapper();
+        this.objectMapper = ObjectMapperFactory.getInstance();
         // Optimized HTTP client configuration with connection pool
         this.client = new OkHttpClient.Builder()
                 // Connection timeouts
@@ -99,6 +98,7 @@ public class HttpClient {
      * Execute POST request with mixed query string and URL-encoded form body
      * Based on Example 3: Mixed query string and request body from the API documentation
      * This method converts the request object to URL-encoded format for proper signature calculation
+     * Optimized with UrlBuilder for better performance
      */
     public <T> T postWithBody(String endpoint, String queryString, Object requestBody, TypeReference<T> responseType) throws CoinsApiException {
         try {
@@ -106,39 +106,26 @@ public class HttpClient {
             @SuppressWarnings("unchecked")
             Map<String, Object> requestMap = objectMapper.convertValue(requestBody, Map.class);
 
-            requestMap.put("timestamp", System.currentTimeMillis());
+            // Create UrlBuilder for parameter management
+            UrlBuilder paramBuilder = UrlBuilder.create("");
+            paramBuilder.addParameters(requestMap);
+            paramBuilder.addParameter("timestamp", System.currentTimeMillis());
             if (config.getRecvWindow() > 0) {
-                requestMap.put("recvWindow", config.getRecvWindow());
+                paramBuilder.addParameter("recvWindow", config.getRecvWindow());
             }
 
-            // Use TreeMap to ensure consistent alphabetical ordering of parameters
-            // This is crucial for signature generation consistency
-            TreeMap<String, Object> sortedParams = new TreeMap<>();
-            for (Map.Entry<String, Object> entry : requestMap.entrySet()) {
-                if (entry.getValue() != null) {
-                    sortedParams.put(entry.getKey(), entry.getValue());
-                }
-            }
+            // Build signature data string using UrlBuilder's consistent ordering
+            String signatureData = paramBuilder.buildQueryString();
+            String signature = SignatureUtils.generateSignature(signatureData, config.getSecretKey());
+            
+            // Add signature to parameters
+            paramBuilder.addParameter("signature", signature);
+            TreeMap<String, String> sortedParams = paramBuilder.getParameters();
 
-            // Build signature data string with consistent parameter ordering
-            StringBuilder signatureData = new StringBuilder();
-            boolean first = true;
-            for (Map.Entry<String, Object> entry : sortedParams.entrySet()) {
-                if (!first) {
-                    signatureData.append("&");
-                }
-                first = false;
-                signatureData.append(entry.getKey()).append("=").append(entry.getValue().toString());
-            }
-
-            // Generate signature
-            String signature = SignatureUtils.generateSignature(signatureData.toString(), config.getSecretKey());
-            sortedParams.put("signature", signature);
-
-            // Build form body using the same sorted parameters to ensure consistency
+            // Build form body using the sorted parameters
             FormBody.Builder builder = new FormBody.Builder();
-            for (Map.Entry<String, Object> entry : sortedParams.entrySet()) {
-                builder.add(entry.getKey(), entry.getValue().toString());
+            for (Map.Entry<String, String> entry : sortedParams.entrySet()) {
+                builder.add(entry.getKey(), entry.getValue());
             }
 
             String url = config.getBaseUrl() + "/" + endpoint;
@@ -171,28 +158,38 @@ public class HttpClient {
     }
 
     /**
-     * Build complete URL with signature
+     * Build complete URL with signature using optimized UrlBuilder
      */
     private String buildUrl(String endpoint, String queryString) {
         long timestamp = System.currentTimeMillis();
-
-        // Add timestamp and recvWindow to query string
-        StringBuilder sb = new StringBuilder();
+        
+        // Create URL builder with base URL and endpoint
+        UrlBuilder urlBuilder = UrlBuilder.create(config.getBaseUrl() + "/" + endpoint);
+        
+        // Parse existing query string if present
         if (queryString != null && !queryString.isEmpty()) {
-            sb.append(queryString);
-            sb.append("&");
+            String[] params = queryString.split("&");
+            for (String param : params) {
+                String[] keyValue = param.split("=", 2);
+                if (keyValue.length == 2) {
+                    urlBuilder.addParameter(keyValue[0], keyValue[1]);
+                }
+            }
         }
-        sb.append("timestamp=").append(timestamp);
+        
+        // Add timestamp and recvWindow
+        urlBuilder.addParameter("timestamp", timestamp);
         if (config.getRecvWindow() > 0) {
-            sb.append("&recvWindow=").append(config.getRecvWindow());
+            urlBuilder.addParameter("recvWindow", config.getRecvWindow());
         }
-
-        // Generate signature
-        String signatureString = SignatureUtils.buildSignatureString(sb.toString());
-        String signature = SignatureUtils.generateSignature(signatureString, config.getSecretKey());
-        sb.append("&signature=").append(signature);
-
-        return config.getBaseUrl() + "/" + endpoint + "?" + sb.toString();
+        
+        // Build query string for signature generation
+        String signatureData = urlBuilder.buildQueryString();
+        String signature = SignatureUtils.generateSignature(signatureData, config.getSecretKey());
+        
+        // Add signature and build final URL
+        urlBuilder.addParameter("signature", signature);
+        return urlBuilder.build();
     }
 
     /**
