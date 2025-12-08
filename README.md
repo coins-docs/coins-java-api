@@ -314,6 +314,12 @@ For issues and questions:
 
 This project is licensed under the terms specified in the project license file.
 
+## 🆘 Support
+
+- **Documentation**: [Coins API Documentation](https://docs.coins.ph)
+- **Issues**: [GitHub Issues](https://github.com/coins-ph/coins-java-sdk/issues)
+- **Email**: support@coins.ph
+
 ## Changelog
 
 ### Version 1.0.0
