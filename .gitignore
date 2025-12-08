@@ -4,6 +4,7 @@
 .iml
 .xml
 *.tmp
+*.class
 # Ignore Gradle build output directory
 build
 out
