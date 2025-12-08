@@ -4,7 +4,7 @@ A comprehensive Java SDK for the Coins API, providing easy access to cryptocurre
 
 ## 📋 API Modules Overview
 
-This Postman collection contains 6 main modules with complete API coverage:
+The SDK provides complete implementations for major Coins API modules:
 
 ### 1. Spot Trading
 - **My Trades** (`myTrades`) - Query user's trading history
