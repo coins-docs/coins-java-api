@@ -105,12 +105,12 @@ public class HttpClient {
             // Convert request body to map and add timestamp/recvWindow
             @SuppressWarnings("unchecked")
             Map<String, Object> requestMap = objectMapper.convertValue(requestBody, Map.class);
-            
+
             requestMap.put("timestamp", System.currentTimeMillis());
             if (config.getRecvWindow() > 0) {
                 requestMap.put("recvWindow", config.getRecvWindow());
             }
-            
+
             // Use TreeMap to ensure consistent alphabetical ordering of parameters
             // This is crucial for signature generation consistency
             TreeMap<String, Object> sortedParams = new TreeMap<>();
@@ -119,7 +119,7 @@ public class HttpClient {
                     sortedParams.put(entry.getKey(), entry.getValue());
                 }
             }
-            
+
             // Build signature data string with consistent parameter ordering
             StringBuilder signatureData = new StringBuilder();
             boolean first = true;
@@ -131,19 +131,18 @@ public class HttpClient {
                 signatureData.append(entry.getKey()).append("=").append(entry.getValue().toString());
             }
 
-            logger.info("Signature data: {}", signatureData);
             // Generate signature
             String signature = SignatureUtils.generateSignature(signatureData.toString(), config.getSecretKey());
             sortedParams.put("signature", signature);
-            
+
             // Build form body using the same sorted parameters to ensure consistency
             FormBody.Builder builder = new FormBody.Builder();
             for (Map.Entry<String, Object> entry : sortedParams.entrySet()) {
                 builder.add(entry.getKey(), entry.getValue().toString());
             }
-            
+
             String url = config.getBaseUrl() + "/" + endpoint;
-            
+
             Request request = new Request.Builder()
                     .url(url)
                     .post(builder.build())
@@ -176,7 +175,7 @@ public class HttpClient {
      */
     private String buildUrl(String endpoint, String queryString) {
         long timestamp = System.currentTimeMillis();
-        
+
         // Add timestamp and recvWindow to query string
         StringBuilder sb = new StringBuilder();
         if (queryString != null && !queryString.isEmpty()) {
@@ -187,12 +186,12 @@ public class HttpClient {
         if (config.getRecvWindow() > 0) {
             sb.append("&recvWindow=").append(config.getRecvWindow());
         }
-        
+
         // Generate signature
         String signatureString = SignatureUtils.buildSignatureString(sb.toString());
         String signature = SignatureUtils.generateSignature(signatureString, config.getSecretKey());
         sb.append("&signature=").append(signature);
-        
+
         return config.getBaseUrl() + "/" + endpoint + "?" + sb.toString();
     }
 
@@ -202,20 +201,20 @@ public class HttpClient {
     private <T> T executeRequest(Request request, TypeReference<T> responseType) throws CoinsApiException {
         try {
             logger.debug("Executing request: {} {}", request.method(), request.url());
-            
+
             try (Response response = client.newCall(request).execute()) {
                 String responseBody = response.body() != null ? response.body().string() : "";
-                
-                logger.info("Response: {} - {}", response.code(), responseBody);
-                
+
+                logger.debug("Response: {} - {}", response.code(), responseBody);
+
                 if (!response.isSuccessful()) {
                     throw new CoinsApiException(response.code(), "HTTP error: " + response.code() + " - " + responseBody);
                 }
-                
+
                 if (responseBody.isEmpty()) {
                     return null;
                 }
-                
+
                 // Check if response contains an API error (code field with negative value)
                 if (responseBody.contains("\"code\"") || responseBody.contains("\"status\"")) {
                     // Try to parse as error response to extract code and message
@@ -237,7 +236,6 @@ public class HttpClient {
                         throw new CoinsApiException(response.code(), responseBody);
                     }
                 }
-                
                 return objectMapper.readValue(responseBody, responseType);
             }
         } catch (IOException e) {
