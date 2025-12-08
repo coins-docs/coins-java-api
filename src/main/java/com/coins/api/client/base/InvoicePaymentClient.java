@@ -8,6 +8,7 @@ import com.coins.api.model.PaymentRequestListResponse;
 import com.coins.api.model.PaymentRequestOperationRequest;
 import com.coins.api.model.PaymentRequestResponse;
 import com.coins.api.util.ValidationUtil;
+import com.coins.api.util.UrlBuilder;
 import com.fasterxml.jackson.core.type.TypeReference;
 
 import java.util.Locale;
@@ -41,21 +42,16 @@ public class InvoicePaymentClient {
     public PaymentRequestResponse createPaymentRequest(CreatePaymentRequestRequest request) throws CoinsApiException {
         ValidationUtil.validate(request, Locale.ENGLISH);
         
-        StringBuilder queryBuilder = new StringBuilder();
-        queryBuilder.append("payer_contact_info=").append(request.getPayerContactInfo());
-        queryBuilder.append("&receiving_account=").append(request.getReceivingAccount());
-        queryBuilder.append("&amount=").append(request.getAmount().toString());
-        queryBuilder.append("&message=").append(request.getMessage());
+        // Use optimized UrlBuilder for query string construction
+        UrlBuilder urlBuilder = UrlBuilder.create("")
+            .addParameter("payer_contact_info", request.getPayerContactInfo())
+            .addParameter("receiving_account", request.getReceivingAccount())
+            .addParameter("amount", request.getAmount() != null ? request.getAmount().toString() : null)
+            .addParameter("message", request.getMessage())
+            .addParameter("supported_payment_collectors", request.getSupportedPaymentCollectors())
+            .addParameter("expires_at", request.getExpiresAt());
         
-        if (request.getSupportedPaymentCollectors() != null) {
-            queryBuilder.append("&supported_payment_collectors=").append(request.getSupportedPaymentCollectors());
-        }
-        
-        if (request.getExpiresAt() != null) {
-            queryBuilder.append("&expires_at=").append(request.getExpiresAt());
-        }
-        
-        return httpClient.post(PAYMENT_REQUEST_ENDPOINT, queryBuilder.toString(), new TypeReference<PaymentRequestResponse>() {});
+        return httpClient.post(PAYMENT_REQUEST_ENDPOINT, urlBuilder.buildQueryString(), new TypeReference<PaymentRequestResponse>() {});
     }
     
     /**
@@ -68,29 +64,14 @@ public class InvoicePaymentClient {
     public PaymentRequestListResponse getPaymentRequests(GetPaymentRequestRequest request) throws CoinsApiException {
         ValidationUtil.validate(request, Locale.ENGLISH);
         
-        StringBuilder queryBuilder = new StringBuilder();
-        boolean hasParams = false;
+        // Use optimized UrlBuilder for query string construction
+        UrlBuilder urlBuilder = UrlBuilder.create("")
+            .addParameter("id", request.getId())
+            .addParameter("start_time", request.getStartTime())
+            .addParameter("end_time", request.getEndTime())
+            .addParameter("limit", request.getLimit());
         
-        if (request.getId() != null) {
-            queryBuilder.append("id=").append(request.getId());
-            hasParams = true;
-        }
-        if (request.getStartTime() != null) {
-            if (hasParams) queryBuilder.append("&");
-            queryBuilder.append("start_time=").append(request.getStartTime());
-            hasParams = true;
-        }
-        if (request.getEndTime() != null) {
-            if (hasParams) queryBuilder.append("&");
-            queryBuilder.append("end_time=").append(request.getEndTime());
-            hasParams = true;
-        }
-        if (request.getLimit() != null) {
-            if (hasParams) queryBuilder.append("&");
-            queryBuilder.append("limit=").append(request.getLimit());
-        }
-        
-        return httpClient.get(GET_PAYMENT_REQUEST_ENDPOINT, queryBuilder.toString(), new TypeReference<PaymentRequestListResponse>() {});
+        return httpClient.get(GET_PAYMENT_REQUEST_ENDPOINT, urlBuilder.buildQueryString(), new TypeReference<PaymentRequestListResponse>() {});
     }
     
     /**
@@ -103,8 +84,11 @@ public class InvoicePaymentClient {
     public PaymentRequestResponse cancelPaymentRequest(PaymentRequestOperationRequest request) throws CoinsApiException {
         ValidationUtil.validate(request, Locale.ENGLISH);
         
-        String queryString = "id=" + request.getId();
-        return httpClient.post(CANCEL_PAYMENT_REQUEST_ENDPOINT, queryString, new TypeReference<PaymentRequestResponse>() {});
+        // Use optimized UrlBuilder for query string construction
+        UrlBuilder urlBuilder = UrlBuilder.create("")
+            .addParameter("id", request.getId());
+        
+        return httpClient.post(CANCEL_PAYMENT_REQUEST_ENDPOINT, urlBuilder.buildQueryString(), new TypeReference<PaymentRequestResponse>() {});
     }
 
     /**
@@ -117,7 +101,10 @@ public class InvoicePaymentClient {
     public Boolean sendPaymentRequestReminder(PaymentRequestOperationRequest request) throws CoinsApiException {
         ValidationUtil.validate(request, Locale.ENGLISH);
         
-        String queryString = "id=" + request.getId();
-        return httpClient.post(PAYMENT_REQUEST_REMINDER_ENDPOINT, queryString, new TypeReference<Boolean>() {});
+        // Use optimized UrlBuilder for query string construction
+        UrlBuilder urlBuilder = UrlBuilder.create("")
+            .addParameter("id", request.getId());
+        
+        return httpClient.post(PAYMENT_REQUEST_REMINDER_ENDPOINT, urlBuilder.buildQueryString(), new TypeReference<Boolean>() {});
     }
 }

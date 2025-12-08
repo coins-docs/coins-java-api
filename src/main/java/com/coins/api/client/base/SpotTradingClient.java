@@ -51,10 +51,7 @@ public class SpotTradingClient {
      * @throws CoinsApiException if the API call fails
      */
     public List<TradeVo> getMyTrades(@Valid HistoryTradeRequest request) throws CoinsApiException {
-        if (request == null) {
-            throw new CoinsApiException("Request cannot be null");
-        }
-        
+
         // Validate request parameters with English locale
         ValidationUtil.validate(request, Locale.ENGLISH);
         
@@ -83,12 +80,13 @@ public class SpotTradingClient {
             ValidationUtil.validate(request, Locale.ENGLISH);
         }
 
-        StringBuilder queryBuilder = new StringBuilder();
+        // Use optimized UrlBuilder for query string construction
+        UrlBuilder urlBuilder = UrlBuilder.create("");
         if (request != null && request.getSymbol() != null && !request.getSymbol().trim().isEmpty()) {
-            queryBuilder.append("symbol=").append(request.getSymbol());
+            urlBuilder.addParameter("symbol", request.getSymbol());
         }
         
-        return httpClient.get(TRADE_FEE_URL, queryBuilder.toString(), new TypeReference<List<TradeFeeResponse>>() {});
+        return httpClient.get(TRADE_FEE_URL, urlBuilder.buildQueryString(), new TypeReference<List<TradeFeeResponse>>() {});
     }
 
     /**
@@ -159,40 +157,25 @@ public class SpotTradingClient {
      * @throws CoinsApiException if the API call fails
      */
     public List<OrderResponse> getHistoryOrders(HistoryOrdersRequest request) throws CoinsApiException {
-        StringBuilder queryBuilder = new StringBuilder();
-        boolean hasParams = false;
+        // Use optimized UrlBuilder for query string construction
+        UrlBuilder urlBuilder = UrlBuilder.create("");
         
         if (request != null) {
-            if (request.getSymbol() != null && !request.getSymbol().trim().isEmpty()) {
-                queryBuilder.append("symbol=").append(request.getSymbol());
-                hasParams = true;
-            }
-            if (request.getOrderId() != null && request.getOrderId() > 0) {
-                if (hasParams) queryBuilder.append("&");
-                queryBuilder.append("orderId=").append(request.getOrderId());
-                hasParams = true;
-            }
-            if (request.getStartTime() != null && request.getStartTime() > 0) {
-                if (hasParams) queryBuilder.append("&");
-                queryBuilder.append("startTime=").append(request.getStartTime());
-                hasParams = true;
-            }
-            if (request.getEndTime() != null && request.getEndTime() > 0) {
-                if (hasParams) queryBuilder.append("&");
-                queryBuilder.append("endTime=").append(request.getEndTime());
-                hasParams = true;
-            }
+            urlBuilder.addParameterIf(request.getSymbol() != null && !request.getSymbol().trim().isEmpty(), "symbol", request.getSymbol())
+                     .addParameterIf(request.getOrderId() != null && request.getOrderId() > 0, "orderId", request.getOrderId())
+                     .addParameterIf(request.getStartTime() != null && request.getStartTime() > 0, "startTime", request.getStartTime())
+                     .addParameterIf(request.getEndTime() != null && request.getEndTime() > 0, "endTime", request.getEndTime());
+            
             if (request.getLimit() != null) {
                 // Validate limit range
                 if (request.getLimit() < 1 || request.getLimit() > 1000) {
                     throw new CoinsApiException("Limit must be between 1 and 1000");
                 }
-                if (hasParams) queryBuilder.append("&");
-                queryBuilder.append("limit=").append(request.getLimit());
+                urlBuilder.addParameter("limit", request.getLimit());
             }
         }
         
-        return httpClient.get(HISTORY_ORDERS_URL, queryBuilder.toString(), new TypeReference<List<OrderResponse>>() {});
+        return httpClient.get(HISTORY_ORDERS_URL, urlBuilder.buildQueryString(), new TypeReference<List<OrderResponse>>() {});
     }
 
     /**
@@ -217,19 +200,13 @@ public class SpotTradingClient {
             throw new CoinsApiException("OrderId must be greater than 0");
         }
         
-        StringBuilder queryBuilder = new StringBuilder();
-        boolean hasParams = false;
+        // Use optimized UrlBuilder for query string construction
+        UrlBuilder urlBuilder = UrlBuilder.create("")
+            .addParameter("orderId", request.getOrderId())
+            .addParameterIf(request.getOrigClientOrderId() != null && !request.getOrigClientOrderId().trim().isEmpty(), 
+                           "origClientOrderId", request.getOrigClientOrderId());
         
-        if (request.getOrderId() != null) {
-            queryBuilder.append("orderId=").append(request.getOrderId());
-            hasParams = true;
-        }
-        if (request.getOrigClientOrderId() != null && !request.getOrigClientOrderId().trim().isEmpty()) {
-            if (hasParams) queryBuilder.append("&");
-            queryBuilder.append("origClientOrderId=").append(request.getOrigClientOrderId());
-        }
-        
-        return httpClient.get(ORDER_URL, queryBuilder.toString(), new TypeReference<Object>() {});
+        return httpClient.get(ORDER_URL, urlBuilder.buildQueryString(), new TypeReference<Object>() {});
     }
 
     /**
