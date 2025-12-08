@@ -8,6 +8,7 @@ import com.coins.api.model.TransferApiRequest;
 import com.coins.api.model.TransferApiResponse;
 import com.coins.api.model.TransferApiVo;
 import com.coins.api.util.ValidationUtil;
+import com.coins.api.util.UrlBuilder;
 import com.fasterxml.jackson.core.type.TypeReference;
 
 import javax.validation.Valid;
@@ -39,13 +40,11 @@ public class P2pTransferClient {
      * @throws CoinsApiException if the API call fails
      */
     public GetBalancesResponse getCryptoAccounts(String currency) throws CoinsApiException {
-        StringBuilder queryBuilder = new StringBuilder();
-        
-        if (currency != null) {
-            queryBuilder.append("currency=").append(currency);
-        }
+        // Use optimized UrlBuilder for query string construction
+        UrlBuilder urlBuilder = UrlBuilder.create("")
+            .addParameter("currency", currency);
 
-        GetBalancesResponse response = httpClient.get(CRYPTO_ACCOUNTS_ENDPOINT, queryBuilder.toString(), new TypeReference<GetBalancesResponse>() {});
+        GetBalancesResponse response = httpClient.get(CRYPTO_ACCOUNTS_ENDPOINT, urlBuilder.buildQueryString(), new TypeReference<GetBalancesResponse>() {});
         return response;
     }
     
@@ -86,38 +85,15 @@ public class P2pTransferClient {
             String fromAddress,
             Long recvWindow) throws CoinsApiException {
         
-        StringBuilder queryBuilder = new StringBuilder();
-        boolean hasParams = false;
+        // Use optimized UrlBuilder for query string construction
+        UrlBuilder urlBuilder = UrlBuilder.create("")
+            .addParameter("client_transfer_id", clientTransferId)
+            .addParameter("page", page)
+            .addParameter("per_page", perPage)
+            .addParameter("to_address", toAddress)
+            .addParameter("from_address", fromAddress)
+            .addParameter("recvWindow", recvWindow);
         
-        if (clientTransferId != null) {
-            queryBuilder.append("client_transfer_id=").append(clientTransferId);
-            hasParams = true;
-        }
-        if (page != null) {
-            if (hasParams) queryBuilder.append("&");
-            queryBuilder.append("page=").append(page);
-            hasParams = true;
-        }
-        if (perPage != null) {
-            if (hasParams) queryBuilder.append("&");
-            queryBuilder.append("per_page=").append(perPage);
-            hasParams = true;
-        }
-        if (toAddress != null) {
-            if (hasParams) queryBuilder.append("&");
-            queryBuilder.append("to_address=").append(toAddress);
-            hasParams = true;
-        }
-        if (fromAddress != null) {
-            if (hasParams) queryBuilder.append("&");
-            queryBuilder.append("from_address=").append(fromAddress);
-            hasParams = true;
-        }
-        if (recvWindow != null) {
-            if (hasParams) queryBuilder.append("&");
-            queryBuilder.append("recvWindow=").append(recvWindow);
-        }
-        
-        return httpClient.get(QUERY_TRANSFER_ENDPOINT, queryBuilder.toString(), new TypeReference<GetTransfersResponse>() {});
+        return httpClient.get(QUERY_TRANSFER_ENDPOINT, urlBuilder.buildQueryString(), new TypeReference<GetTransfersResponse>() {});
     }
 }

@@ -23,6 +23,7 @@ import com.coins.api.model.OpenApiUpdateQrCodeResponse;
 import com.coins.api.model.QueryFiatOrderRequest;
 import com.coins.api.model.WebPageResponse;
 import com.coins.api.util.ValidationUtil;
+import com.coins.api.util.UrlBuilder;
 import com.fasterxml.jackson.core.type.TypeReference;
 
 import java.util.List;
@@ -78,18 +79,12 @@ public class FiatClient {
     public FiatOrderCommonResponse getOrderDetails(FiatOrderDetailsRequest request) throws CoinsApiException {
         ValidationUtil.validate(request, Locale.ENGLISH);
         
-        StringBuilder queryBuilder = new StringBuilder();
-        if (request.getInternalOrderId() != null) {
-            queryBuilder.append("internalOrderId=").append(request.getInternalOrderId());
-        }
-        if (request.getExternalOrderId() != null) {
-            if (queryBuilder.length() > 0) {
-                queryBuilder.append("&");
-            }
-            queryBuilder.append("externalOrderId=").append(request.getExternalOrderId());
-        }
+        // Use optimized UrlBuilder for query string construction
+        UrlBuilder urlBuilder = UrlBuilder.create("")
+            .addParameter("internalOrderId", request.getInternalOrderId())
+            .addParameter("externalOrderId", request.getExternalOrderId());
 
-        APIResponse<FiatOrderCommonResponse> response = httpClient.get(ORDER_DETAILS_ENDPOINT, queryBuilder.toString(), new TypeReference<APIResponse<FiatOrderCommonResponse>>() {});
+        APIResponse<FiatOrderCommonResponse> response = httpClient.get(ORDER_DETAILS_ENDPOINT, urlBuilder.buildQueryString(), new TypeReference<APIResponse<FiatOrderCommonResponse>>() {});
 
         return response.getData();
     }
@@ -187,12 +182,11 @@ public class FiatClient {
     public OpenApiQrCodeGenerateResponse getQrCode(GetQrCodeRequest request) throws CoinsApiException {
         ValidationUtil.validate(request, Locale.ENGLISH);
         
-        StringBuilder queryBuilder = new StringBuilder();
-        if (request.getRequestId() != null) {
-            queryBuilder.append("requestId=").append(request.getRequestId());
-        }
+        // Use optimized UrlBuilder for query string construction
+        UrlBuilder urlBuilder = UrlBuilder.create("")
+            .addParameter("requestId", request.getRequestId());
 
-        APIResponse response = httpClient.get(GET_QR_CODE_ENDPOINT, queryBuilder.toString(), new TypeReference<APIResponse<OpenApiQrCodeGenerateResponse>>() {});
+        APIResponse response = httpClient.get(GET_QR_CODE_ENDPOINT, urlBuilder.buildQueryString(), new TypeReference<APIResponse<OpenApiQrCodeGenerateResponse>>() {});
         return (OpenApiQrCodeGenerateResponse) response.getData();
     }
     
@@ -206,12 +200,11 @@ public class FiatClient {
     public List<OpenApiQrCodeResponse> getStaticQrCodeList(GetStaticQrCodeListRequest request) throws CoinsApiException {
         ValidationUtil.validate(request, Locale.ENGLISH);
         
-        StringBuilder queryBuilder = new StringBuilder();
-        if (request.getStatus() != null) {
-            queryBuilder.append("status=").append(request.getStatus());
-        }
+        // Use optimized UrlBuilder for query string construction
+        UrlBuilder urlBuilder = UrlBuilder.create("")
+            .addParameter("status", request.getStatus());
 
-        APIResponse response = httpClient.get(GET_STATIC_QR_CODE_LIST_ENDPOINT, queryBuilder.toString(), new TypeReference<APIResponse<List<OpenApiQrCodeResponse>>>() {});
+        APIResponse response = httpClient.get(GET_STATIC_QR_CODE_LIST_ENDPOINT, urlBuilder.buildQueryString(), new TypeReference<APIResponse<List<OpenApiQrCodeResponse>>>() {});
         return (List<OpenApiQrCodeResponse>) response.getData();
     }
 }

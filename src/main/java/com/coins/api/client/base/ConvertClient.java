@@ -13,6 +13,7 @@ import com.coins.api.model.GetSupportedTradingPairsRequest;
 import com.coins.api.model.GetSupportedTradingPairsResponse;
 import com.coins.api.model.SupportedTradingPair;
 import com.coins.api.util.ValidationUtil;
+import com.coins.api.util.UrlBuilder;
 import com.fasterxml.jackson.core.type.TypeReference;
 
 import java.util.List;
@@ -39,10 +40,11 @@ public class ConvertClient {
      */
     public List<SupportedTradingPair> getSupportedTradingPairs(GetSupportedTradingPairsRequest request) throws CoinsApiException {
 
-        StringBuilder queryString = new StringBuilder();
-        queryString.append("type=").append(request.getType());
+        // Use optimized UrlBuilder for query string construction
+        UrlBuilder urlBuilder = UrlBuilder.create("")
+            .addParameter("type", request.getType());
 
-        GetSupportedTradingPairsResponse response = httpClient.post(SUPPORTED_TRADING_PAIRS_URL, queryString.toString(),
+        GetSupportedTradingPairsResponse response = httpClient.post(SUPPORTED_TRADING_PAIRS_URL, urlBuilder.buildQueryString(),
                 new TypeReference<GetSupportedTradingPairsResponse>() {});
         return response.getData();
     }

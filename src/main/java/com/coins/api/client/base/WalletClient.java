@@ -16,6 +16,7 @@ import com.coins.api.model.WithdrawHistoryQueryRequest;
 import com.coins.api.model.WithdrawRecordVo;
 import com.coins.api.model.WithdrawWhitelistQueryRequest;
 import com.coins.api.util.ValidationUtil;
+import com.coins.api.util.UrlBuilder;
 import com.fasterxml.jackson.core.type.TypeReference;
 
 import java.util.List;
@@ -52,12 +53,11 @@ public class WalletClient {
      * @throws CoinsApiException if the API call fails
      */
     public AccountInfoResponse getAccount(Long recvWindow) throws CoinsApiException {
-        StringBuilder queryBuilder = new StringBuilder();
-        if (recvWindow != null) {
-            queryBuilder.append("recvWindow=").append(recvWindow);
-        }
+        // Use optimized UrlBuilder for query string construction
+        UrlBuilder urlBuilder = UrlBuilder.create("")
+            .addParameter("recvWindow", recvWindow);
         
-        return httpClient.get(ACCOUNT_ENDPOINT, queryBuilder.toString(), new TypeReference<AccountInfoResponse>() {});
+        return httpClient.get(ACCOUNT_ENDPOINT, urlBuilder.buildQueryString(), new TypeReference<AccountInfoResponse>() {});
     }
     
     /**
@@ -80,11 +80,12 @@ public class WalletClient {
     public DepositAddress getDepositAddress(DepositAddressApiRequest request) throws CoinsApiException {
         ValidationUtil.validate(request, Locale.ENGLISH);
 
-        StringBuilder queryBuilder = new StringBuilder();
-        queryBuilder.append("coin=").append(request.getCoin());
-        queryBuilder.append("&network=").append(request.getNetwork());
+        // Use optimized UrlBuilder for query string construction
+        UrlBuilder urlBuilder = UrlBuilder.create("")
+            .addParameter("coin", request.getCoin())
+            .addParameter("network", request.getNetwork());
         
-        return httpClient.get(DEPOSIT_ADDRESS_ENDPOINT, queryBuilder.toString(), new TypeReference<DepositAddress>() {});
+        return httpClient.get(DEPOSIT_ADDRESS_ENDPOINT, urlBuilder.buildQueryString(), new TypeReference<DepositAddress>() {});
     }
     
     /**
@@ -111,49 +112,18 @@ public class WalletClient {
             Integer offset,
             Integer limit) throws CoinsApiException {
         
-        StringBuilder queryBuilder = new StringBuilder();
-        boolean hasParams = false;
+        // Use optimized UrlBuilder for query string construction
+        UrlBuilder urlBuilder = UrlBuilder.create("")
+            .addParameter("coin", coin)
+            .addParameter("txId", txId)
+            .addParameter("status", status)
+            .addParameter("statuses", statuses)
+            .addParameter("startTime", startTime)
+            .addParameter("endTime", endTime)
+            .addParameter("offset", offset)
+            .addParameter("limit", limit);
         
-        if (coin != null) {
-            queryBuilder.append("coin=").append(coin);
-            hasParams = true;
-        }
-        if (txId != null) {
-            if (hasParams) queryBuilder.append("&");
-            queryBuilder.append("txId=").append(txId);
-            hasParams = true;
-        }
-        if (status != null) {
-            if (hasParams) queryBuilder.append("&");
-            queryBuilder.append("status=").append(status);
-            hasParams = true;
-        }
-        if (statuses != null) {
-            if (hasParams) queryBuilder.append("&");
-            queryBuilder.append("statuses=").append(statuses);
-            hasParams = true;
-        }
-        if (startTime != null) {
-            if (hasParams) queryBuilder.append("&");
-            queryBuilder.append("startTime=").append(startTime);
-            hasParams = true;
-        }
-        if (endTime != null) {
-            if (hasParams) queryBuilder.append("&");
-            queryBuilder.append("endTime=").append(endTime);
-            hasParams = true;
-        }
-        if (offset != null) {
-            if (hasParams) queryBuilder.append("&");
-            queryBuilder.append("offset=").append(offset);
-            hasParams = true;
-        }
-        if (limit != null) {
-            if (hasParams) queryBuilder.append("&");
-            queryBuilder.append("limit=").append(limit);
-        }
-        
-        return httpClient.get(DEPOSIT_HISTORY_ENDPOINT, queryBuilder.toString(), new TypeReference<List<DepositRecordVo>>() {});
+        return httpClient.get(DEPOSIT_HISTORY_ENDPOINT, urlBuilder.buildQueryString(), new TypeReference<List<DepositRecordVo>>() {});
     }
     
     /**
@@ -166,44 +136,17 @@ public class WalletClient {
     public List<WithdrawRecordVo> getWithdrawHistory(WithdrawHistoryQueryRequest request) throws CoinsApiException {
         ValidationUtil.validate(request, Locale.ENGLISH);
         
-        StringBuilder queryBuilder = new StringBuilder();
-        boolean hasParams = false;
+        // Use optimized UrlBuilder for query string construction
+        UrlBuilder urlBuilder = UrlBuilder.create("")
+            .addParameter("coin", request.getCoin())
+            .addParameter("withdrawOrderId", request.getWithdrawOrderId())
+            .addParameter("status", request.getStatus())
+            .addParameter("startTime", request.getStartTime())
+            .addParameter("endTime", request.getEndTime())
+            .addParameter("offset", request.getOffset())
+            .addParameter("limit", request.getLimit());
         
-        if (request.getCoin() != null) {
-            queryBuilder.append("coin=").append(request.getCoin());
-            hasParams = true;
-        }
-        if (request.getWithdrawOrderId() != null) {
-            if (hasParams) queryBuilder.append("&");
-            queryBuilder.append("withdrawOrderId=").append(request.getWithdrawOrderId());
-            hasParams = true;
-        }
-        if (request.getStatus() != null) {
-            if (hasParams) queryBuilder.append("&");
-            queryBuilder.append("status=").append(request.getStatus());
-            hasParams = true;
-        }
-        if (request.getStartTime() != null) {
-            if (hasParams) queryBuilder.append("&");
-            queryBuilder.append("startTime=").append(request.getStartTime());
-            hasParams = true;
-        }
-        if (request.getEndTime() != null) {
-            if (hasParams) queryBuilder.append("&");
-            queryBuilder.append("endTime=").append(request.getEndTime());
-            hasParams = true;
-        }
-        if (request.getOffset() != null) {
-            if (hasParams) queryBuilder.append("&");
-            queryBuilder.append("offset=").append(request.getOffset());
-            hasParams = true;
-        }
-        if (request.getLimit() != null) {
-            if (hasParams) queryBuilder.append("&");
-            queryBuilder.append("limit=").append(request.getLimit());
-        }
-        
-        return httpClient.get(WITHDRAW_HISTORY_ENDPOINT, queryBuilder.toString(), new TypeReference<List<WithdrawRecordVo>>() {});
+        return httpClient.get(WITHDRAW_HISTORY_ENDPOINT, urlBuilder.buildQueryString(), new TypeReference<List<WithdrawRecordVo>>() {});
     }
     
     /**
@@ -230,39 +173,16 @@ public class WalletClient {
     public GetTransactionHistoryResponse getTransactionHistory(GetTransactionHistoryRequest request) throws CoinsApiException {
         ValidationUtil.validate(request, Locale.ENGLISH);
         
-        StringBuilder queryBuilder = new StringBuilder();
-        boolean hasParams = false;
+        // Use optimized UrlBuilder for query string construction
+        UrlBuilder urlBuilder = UrlBuilder.create("")
+            .addParameter("tokenId", request.getTokenId())
+            .addParameter("startTime", request.getStartTime())
+            .addParameter("endTime", request.getEndTime())
+            .addParameter("subUserId", request.getSubUserId())
+            .addParameter("pageNum", request.getPageNum())
+            .addParameter("pageSize", request.getPageSize());
         
-        if (request.getTokenId() != null) {
-            queryBuilder.append("tokenId=").append(request.getTokenId());
-            hasParams = true;
-        }
-        if (request.getStartTime() != null) {
-            if (hasParams) queryBuilder.append("&");
-            queryBuilder.append("startTime=").append(request.getStartTime());
-            hasParams = true;
-        }
-        if (request.getEndTime() != null) {
-            if (hasParams) queryBuilder.append("&");
-            queryBuilder.append("endTime=").append(request.getEndTime());
-            hasParams = true;
-        }
-        if (request.getSubUserId() != null) {
-            if (hasParams) queryBuilder.append("&");
-            queryBuilder.append("subUserId=").append(request.getSubUserId());
-            hasParams = true;
-        }
-        if (request.getPageNum() != null) {
-            if (hasParams) queryBuilder.append("&");
-            queryBuilder.append("pageNum=").append(request.getPageNum());
-            hasParams = true;
-        }
-        if (request.getPageSize() != null) {
-            if (hasParams) queryBuilder.append("&");
-            queryBuilder.append("pageSize=").append(request.getPageSize());
-        }
-        
-        return httpClient.get(TRANSACTION_HISTORY_ENDPOINT, queryBuilder.toString(), new TypeReference<GetTransactionHistoryResponse>() {});
+        return httpClient.get(TRANSACTION_HISTORY_ENDPOINT, urlBuilder.buildQueryString(), new TypeReference<GetTransactionHistoryResponse>() {});
     }
     
     /**
@@ -273,23 +193,12 @@ public class WalletClient {
      * @throws CoinsApiException if the API call fails
      */
     public List<AddressWhitelistVo> getAddressWhitelist(WithdrawWhitelistQueryRequest request) throws CoinsApiException {
-        StringBuilder queryBuilder = new StringBuilder();
-        boolean hasParams = false;
+        // Use optimized UrlBuilder for query string construction
+        UrlBuilder urlBuilder = UrlBuilder.create("")
+            .addParameter("coin", request.getCoin())
+            .addParameter("network", request.getNetwork())
+            .addParameter("address", request.getAddress());
         
-        if (request.getCoin() != null) {
-            queryBuilder.append("coin=").append(request.getCoin());
-            hasParams = true;
-        }
-        if (request.getNetwork() != null) {
-            if (hasParams) queryBuilder.append("&");
-            queryBuilder.append("network=").append(request.getNetwork());
-            hasParams = true;
-        }
-        if (request.getAddress() != null) {
-            if (hasParams) queryBuilder.append("&");
-            queryBuilder.append("address=").append(request.getAddress());
-        }
-        
-        return httpClient.get(ADDRESS_WHITELIST_ENDPOINT, queryBuilder.toString(), new TypeReference<List<AddressWhitelistVo>>() {});
+        return httpClient.get(ADDRESS_WHITELIST_ENDPOINT, urlBuilder.buildQueryString(), new TypeReference<List<AddressWhitelistVo>>() {});
     }
 }

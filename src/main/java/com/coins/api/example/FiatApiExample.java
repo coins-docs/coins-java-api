@@ -36,11 +36,12 @@ public class FiatApiExample {
     
     public static void main(String[] args) {
         CoinsApiConfig config = CoinsApiConfig.builder()
-                                              .apiKey("your-api-key")
-                                              .secretKey("your-secret-key")
-                                              .baseUrl("https://api.pro.coins.ph")  // Use appropriate base URL
-                                              .recvWindow(5000)  // Optional: request timeout window in milliseconds
+                                              .apiKey("sN7I8WSudxSNlVJztTaZf7nfIzhdbeitZ8EWlOnn9qUJm0RvznW03DmB8IM3VTik")
+                                              .secretKey("J6ZyMS8RKPFLSm4DQ488UwzuSP26agbYax1TphnrB13QoxKUiEMOfduWXpPJYHYw")
+                                              .baseUrl("https://api.9001.pl-qa.coinsxyz.me")
+                                              .recvWindow(5000)
                                               .build();
+
 
         // Create the main API client
         CoinsApiClient client = new CoinsApiClient(config);
