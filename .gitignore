@@ -1,0 +1,27 @@
+.gradle/**
+# Ignore Gradle project-specific cache directory
+.gradle
+.iml
+.xml
+*.tmp
+# Ignore Gradle build output directory
+build
+out
+.idea/**
+.gradle/**
+logs
+data/**
+data/GeoLite2-Country.mmdb
+err_logs
+*.DS_Store
+*.hprof
+gradle.properties
+.class
+*/target/*
+*.iml
+*/target/**
+*.jar
+.vscode/**
+config-cache/**
+.env
+application-local.properties
