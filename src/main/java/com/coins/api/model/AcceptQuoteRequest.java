@@ -1,7 +1,7 @@
 package com.coins.api.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import javax.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.NotEmpty;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;

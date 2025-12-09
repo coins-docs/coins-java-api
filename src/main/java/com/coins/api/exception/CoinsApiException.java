@@ -4,6 +4,7 @@ package com.coins.api.exception;
  * Base exception for Coins API operations
  */
 public class CoinsApiException extends Exception {
+    private static final long serialVersionUID = 1L;
     private final int code;
 
     public CoinsApiException(String message) {

@@ -20,7 +20,7 @@ import com.coins.api.util.ValidationUtil;
 import com.coins.api.util.UrlBuilder;
 import com.fasterxml.jackson.core.type.TypeReference;
 
-import javax.validation.Valid;
+import jakarta.validation.Valid;
 import java.util.List;
 import java.util.Locale;
 

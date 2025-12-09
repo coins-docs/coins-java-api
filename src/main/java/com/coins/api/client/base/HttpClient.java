@@ -36,7 +36,6 @@ public class HttpClient {
     public HttpClient(CoinsApiConfig config) {
         this.config = config;
         this.objectMapper = ObjectMapperFactory.getInstance();
-        // Optimized HTTP client configuration with connection pool
         this.client = new OkHttpClient.Builder()
                 // Connection timeouts
                 .connectTimeout(10, TimeUnit.SECONDS)
