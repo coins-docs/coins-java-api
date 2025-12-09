@@ -76,11 +76,11 @@ public class QueryFiatOrderRequest {
     private Long endTime;
     
     // Pagination fields
-    @Min(value = 1)
+    @Min(value = 1, message = "page must be greater than 0")
     @Builder.Default
     private Integer page = 1;
     
-    @Min(value = 1)
+    @Min(value = 1, message = "size must be greater than 0")
     @Builder.Default
     private Integer size = 20;
 }

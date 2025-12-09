@@ -18,23 +18,23 @@ import org.hibernate.validator.constraints.Length;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class WithdrawApplyRequest {
 
-    @NotEmpty
-    @Length(min=1, max=10)
+    @NotEmpty(message = "coin cannot be empty")
+    @Length(min=1, max=10, message = "coin length must be between 1 and 10 characters")
     private String coin;
 
     private String withdrawOrderId;
 
-    @NotEmpty
-    @Length(min=1, max=20)
+    @NotEmpty(message = "network cannot be empty")
+    @Length(min=1, max=20, message = "network length must be between 1 and 20 characters")
     private String network;
 
-    @NotEmpty
-    @Length(min=1, max=100)
+    @NotEmpty(message = "address cannot be empty")
+    @Length(min=1, max=100, message = "address length must be between 1 and 100 characters")
     private String address;
 
     private String addressTag;
 
-    @NotNull
-    @DecimalMin(value = "0", inclusive=false)
+    @NotNull(message = "amount cannot be null")
+    @DecimalMin(value = "0", inclusive=false, message = "amount must be greater than 0")
     private BigDecimal amount;
 }

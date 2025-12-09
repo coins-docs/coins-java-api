@@ -14,6 +14,6 @@ import lombok.NoArgsConstructor;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class AcceptQuoteRequest {
     
-    @NotEmpty
+    @NotEmpty(message = "quoteId cannot be empty")
     private String quoteId;
 }

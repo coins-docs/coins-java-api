@@ -57,7 +57,7 @@ public class P2pTransferClient {
      */
     public TransferApiVo executeTransfer(@Valid TransferApiRequest request) throws CoinsApiException {
         // Validate request parameters with English locale
-        ValidationUtil.validate(request, Locale.ENGLISH);
+        ValidationUtil.validate(request);
         
         // Use postWithBody to send JSON request body
         TransferApiResponse response = httpClient.postWithBody(P2P_TRANSFER_ENDPOINT, request, new TypeReference<TransferApiResponse>() {});

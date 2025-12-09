@@ -17,8 +17,11 @@ import lombok.NoArgsConstructor;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class GetQuoteRequest {
 
-    private @NotBlank String sourceCurrency;
-    private @NotBlank String targetCurrency;
+    @NotBlank(message = "sourceCurrency cannot be blank")
+    private String sourceCurrency;
+    
+    @NotBlank(message = "targetCurrency cannot be blank")
+    private String targetCurrency;
     private String sourceAmount;
     private String targetAmount;
     private BizType type;

@@ -14,6 +14,6 @@ import lombok.NoArgsConstructor;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class PaymentRequestOperationRequest {
     
-    @NotEmpty
+    @NotEmpty(message = "id cannot be empty")
     private String id;
 }

@@ -18,28 +18,28 @@ import java.math.BigDecimal;
 @AllArgsConstructor
 public class TransferApiRequest {
 
-    @Length(max = 100)
+    @Length(max = 100, message = "clientTransferId length must not exceed 100 characters")
     @JsonProperty("client_transfer_id")
     private String clientTransferId;
 
     /**
      * 转出方的balance_id
      */
-    @NotBlank
+    @NotBlank(message = "account cannot be blank")
     private String account;
 
     /**
      * 转入方的email或者phone
      */
-    @NotBlank
+    @NotBlank(message = "targetAddress cannot be blank")
     @JsonProperty("target_address")
     private String targetAddress;
 
-    @NotNull
-    @DecimalMin(value = "0", inclusive = false)
+    @NotNull(message = "amount cannot be null")
+    @DecimalMin(value = "0", inclusive = false, message = "amount must be greater than 0")
     private BigDecimal amount;
 
-    @Length(max = 200)
+    @Length(max = 200, message = "message length must not exceed 200 characters")
     private String message;
 
     // Manual setters for compatibility

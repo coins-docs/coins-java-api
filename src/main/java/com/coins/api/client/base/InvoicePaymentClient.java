@@ -40,7 +40,7 @@ public class InvoicePaymentClient {
      * @throws CoinsApiException if the API call fails
      */
     public PaymentRequestResponse createPaymentRequest(CreatePaymentRequestRequest request) throws CoinsApiException {
-        ValidationUtil.validate(request, Locale.ENGLISH);
+        ValidationUtil.validate(request);
         
         // Use optimized UrlBuilder for query string construction
         UrlBuilder urlBuilder = UrlBuilder.create("")
@@ -62,7 +62,7 @@ public class InvoicePaymentClient {
      * @throws CoinsApiException if the API call fails
      */
     public PaymentRequestListResponse getPaymentRequests(GetPaymentRequestRequest request) throws CoinsApiException {
-        ValidationUtil.validate(request, Locale.ENGLISH);
+        ValidationUtil.validate(request);
         
         // Use optimized UrlBuilder for query string construction
         UrlBuilder urlBuilder = UrlBuilder.create("")
@@ -82,7 +82,7 @@ public class InvoicePaymentClient {
      * @throws CoinsApiException if the API call fails
      */
     public PaymentRequestResponse cancelPaymentRequest(PaymentRequestOperationRequest request) throws CoinsApiException {
-        ValidationUtil.validate(request, Locale.ENGLISH);
+        ValidationUtil.validate(request);
         
         // Use optimized UrlBuilder for query string construction
         UrlBuilder urlBuilder = UrlBuilder.create("")
@@ -99,7 +99,7 @@ public class InvoicePaymentClient {
      * @throws CoinsApiException if the API call fails
      */
     public Boolean sendPaymentRequestReminder(PaymentRequestOperationRequest request) throws CoinsApiException {
-        ValidationUtil.validate(request, Locale.ENGLISH);
+        ValidationUtil.validate(request);
         
         // Use optimized UrlBuilder for query string construction
         UrlBuilder urlBuilder = UrlBuilder.create("")

@@ -10,28 +10,28 @@ import java.math.BigDecimal;
 @Data
 public class CancelReplaceRequest {
 
-    @NotBlank
-    @Length(max = 20)
+    @NotBlank(message = "symbol cannot be blank")
+    @Length(max = 20, message = "symbol length must not exceed 20 characters")
     private String symbol;
 
-    @NotBlank
+    @NotBlank(message = "side cannot be blank")
     private String side;
 
-    @NotBlank
+    @NotBlank(message = "type cannot be blank")
     private String type;
 
-    @NotBlank
+    @NotBlank(message = "cancelReplaceMode cannot be blank")
     private String cancelReplaceMode;
 
     private String timeInForce;
 
-    @DecimalMin(value = "0", inclusive = false)
+    @DecimalMin(value = "0", inclusive = false, message = "quantity must be greater than 0")
     private BigDecimal quantity;
 
-    @DecimalMin(value = "0", inclusive = false)
+    @DecimalMin(value = "0", inclusive = false, message = "quoteOrderQty must be greater than 0")
     private BigDecimal quoteOrderQty;
 
-    @DecimalMin(value = "0", inclusive = false)
+    @DecimalMin(value = "0", inclusive = false, message = "price must be greater than 0")
     private BigDecimal price;
 
     private String newClientOrderId;
@@ -40,7 +40,7 @@ public class CancelReplaceRequest {
 
     private Long cancelOrderId;
 
-    @DecimalMin(value = "0", inclusive = false)
+    @DecimalMin(value = "0", inclusive = false, message = "stopPrice must be greater than 0")
     private BigDecimal stopPrice;
 
     private String newOrderRespType;
