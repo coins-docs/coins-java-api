@@ -40,11 +40,10 @@ public class P2pTransferClient {
      * @throws CoinsApiException if the API call fails
      */
     public GetBalancesResponse getCryptoAccounts(String currency) throws CoinsApiException {
-        // Use optimized UrlBuilder for query string construction
         UrlBuilder urlBuilder = UrlBuilder.create("")
             .addParameter("currency", currency);
 
-        GetBalancesResponse response = httpClient.get(CRYPTO_ACCOUNTS_ENDPOINT, urlBuilder.buildQueryString(), new TypeReference<GetBalancesResponse>() {});
+        GetBalancesResponse response = httpClient.get(CRYPTO_ACCOUNTS_ENDPOINT, urlBuilder, new TypeReference<GetBalancesResponse>() {});
         return response;
     }
     
@@ -85,7 +84,6 @@ public class P2pTransferClient {
             String fromAddress,
             Long recvWindow) throws CoinsApiException {
         
-        // Use optimized UrlBuilder for query string construction
         UrlBuilder urlBuilder = UrlBuilder.create("")
             .addParameter("client_transfer_id", clientTransferId)
             .addParameter("page", page)
@@ -94,6 +92,6 @@ public class P2pTransferClient {
             .addParameter("from_address", fromAddress)
             .addParameter("recvWindow", recvWindow);
         
-        return httpClient.get(QUERY_TRANSFER_ENDPOINT, urlBuilder.buildQueryString(), new TypeReference<GetTransfersResponse>() {});
+        return httpClient.get(QUERY_TRANSFER_ENDPOINT, urlBuilder, new TypeReference<GetTransfersResponse>() {});
     }
 }

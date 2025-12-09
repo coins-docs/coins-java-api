@@ -55,7 +55,6 @@ public class SpotTradingClient {
         // Validate request parameters with English locale
         ValidationUtil.validate(request);
         
-        // Use optimized UrlBuilder for query string construction
         UrlBuilder urlBuilder = UrlBuilder.create("")
             .addParameter("symbol", request.getSymbol())
             .addParameterIf(request.getOrderId() != null && request.getOrderId() > 0, "orderId", request.getOrderId())
@@ -64,7 +63,7 @@ public class SpotTradingClient {
             .addParameterIf(request.getFromId() != null && request.getFromId() > 0, "fromId", request.getFromId())
             .addParameterIf(request.getLimit() != null && request.getLimit() > 0, "limit", request.getLimit());
         
-        return httpClient.get(MY_TRADES_URL, urlBuilder.buildQueryString(), new TypeReference<List<TradeVo>>() {});
+        return httpClient.get(MY_TRADES_URL, urlBuilder, new TypeReference<List<TradeVo>>() {});
     }
 
     /**
@@ -80,22 +79,21 @@ public class SpotTradingClient {
             ValidationUtil.validate(request);
         }
 
-        // Use optimized UrlBuilder for query string construction
         UrlBuilder urlBuilder = UrlBuilder.create("");
         if (request != null && request.getSymbol() != null && !request.getSymbol().trim().isEmpty()) {
             urlBuilder.addParameter("symbol", request.getSymbol());
         }
         
-        return httpClient.get(TRADE_FEE_URL, urlBuilder.buildQueryString(), new TypeReference<List<TradeFeeResponse>>() {});
+        return httpClient.get(TRADE_FEE_URL, urlBuilder, new TypeReference<List<TradeFeeResponse>>() {});
     }
 
     /**
-     * Build query string for new order request using optimized UrlBuilder
+     * Build UrlBuilder for new order request
      * 
      * @param request New order request object
-     * @return Query string
+     * @return UrlBuilder
      */
-    private String buildNewOrderQueryString(NewOrderRequest request) {
+    private UrlBuilder buildNewOrderUrlBuilder(NewOrderRequest request) {
         return UrlBuilder.create("")
             .addParameter("symbol", request.getSymbol())
             .addParameter("side", request.getSide())
@@ -107,8 +105,17 @@ public class SpotTradingClient {
             .addParameter("newClientOrderId", request.getNewClientOrderId())
             .addParameter("stopPrice", request.getStopPrice())
             .addParameter("newOrderRespType", request.getNewOrderRespType())
-            .addParameter("stpFlag", request.getStpFlag())
-            .buildQueryString();
+            .addParameter("stpFlag", request.getStpFlag());
+    }
+
+    /**
+     * Build query string for new order request
+     * 
+     * @param request New order request object
+     * @return Query string
+     */
+    private String buildNewOrderQueryString(NewOrderRequest request) {
+        return buildNewOrderUrlBuilder(request).buildQueryString();
     }
 
     /**
@@ -126,8 +133,8 @@ public class SpotTradingClient {
         // Validate request parameters with English locale
         ValidationUtil.validate(request);
 
-        String queryString = buildNewOrderQueryString(request);
-        return httpClient.post(ORDER_TEST_URL, queryString, new TypeReference<Object>() {});
+        UrlBuilder urlBuilder = buildNewOrderUrlBuilder(request);
+        return httpClient.post(ORDER_TEST_URL, urlBuilder, new TypeReference<Object>() {});
     }
 
     /**
@@ -145,8 +152,8 @@ public class SpotTradingClient {
         // Validate request parameters with English locale
         ValidationUtil.validate(request);
 
-        String queryString = buildNewOrderQueryString(request);
-        return httpClient.post(ORDER_URL, queryString, new TypeReference<NewOrderResponse>() {});
+        UrlBuilder urlBuilder = buildNewOrderUrlBuilder(request);
+        return httpClient.post(ORDER_URL, urlBuilder, new TypeReference<NewOrderResponse>() {});
     }
 
     /**
@@ -157,25 +164,21 @@ public class SpotTradingClient {
      * @throws CoinsApiException if the API call fails
      */
     public List<OrderResponse> getHistoryOrders(HistoryOrdersRequest request) throws CoinsApiException {
-        // Use optimized UrlBuilder for query string construction
+        if (request != null) {
+            ValidationUtil.validate(request);
+        }
+        
         UrlBuilder urlBuilder = UrlBuilder.create("");
         
         if (request != null) {
             urlBuilder.addParameterIf(request.getSymbol() != null && !request.getSymbol().trim().isEmpty(), "symbol", request.getSymbol())
                      .addParameterIf(request.getOrderId() != null && request.getOrderId() > 0, "orderId", request.getOrderId())
                      .addParameterIf(request.getStartTime() != null && request.getStartTime() > 0, "startTime", request.getStartTime())
-                     .addParameterIf(request.getEndTime() != null && request.getEndTime() > 0, "endTime", request.getEndTime());
-            
-            if (request.getLimit() != null) {
-                // Validate limit range
-                if (request.getLimit() < 1 || request.getLimit() > 1000) {
-                    throw new CoinsApiException("Limit must be between 1 and 1000");
-                }
-                urlBuilder.addParameter("limit", request.getLimit());
-            }
+                     .addParameterIf(request.getEndTime() != null && request.getEndTime() > 0, "endTime", request.getEndTime())
+                     .addParameterIf(request.getLimit() != null, "limit", request.getLimit());
         }
         
-        return httpClient.get(HISTORY_ORDERS_URL, urlBuilder.buildQueryString(), new TypeReference<List<OrderResponse>>() {});
+        return httpClient.get(HISTORY_ORDERS_URL, urlBuilder, new TypeReference<List<OrderResponse>>() {});
     }
 
     /**
@@ -186,27 +189,14 @@ public class SpotTradingClient {
      * @throws CoinsApiException if the API call fails
      */
     public Object getOrder(GetOrderRequest request) throws CoinsApiException {
-        if (request == null) {
-            throw new CoinsApiException("Request cannot be null");
-        }
+        ValidationUtil.validate(request);
         
-        // Validate that at least one parameter is provided
-        if (request.getOrderId() == null && (request.getOrigClientOrderId() == null || request.getOrigClientOrderId().trim().isEmpty())) {
-            throw new CoinsApiException("Either orderId or origClientOrderId is required");
-        }
-        
-        // Validate orderId range if provided
-        if (request.getOrderId() != null && request.getOrderId() < 1) {
-            throw new CoinsApiException("OrderId must be greater than 0");
-        }
-        
-        // Use optimized UrlBuilder for query string construction
         UrlBuilder urlBuilder = UrlBuilder.create("")
             .addParameter("orderId", request.getOrderId())
             .addParameterIf(request.getOrigClientOrderId() != null && !request.getOrigClientOrderId().trim().isEmpty(), 
                            "origClientOrderId", request.getOrigClientOrderId());
         
-        return httpClient.get(ORDER_URL, urlBuilder.buildQueryString(), new TypeReference<Object>() {});
+        return httpClient.get(ORDER_URL, urlBuilder, new TypeReference<Object>() {});
     }
 
     /**
@@ -217,33 +207,14 @@ public class SpotTradingClient {
      * @throws CoinsApiException if the API call fails
      */
     public CancelOrderResponse cancelOrder(CancelOrderRequest request) throws CoinsApiException {
-        if (request == null) {
-            throw new CoinsApiException("Request cannot be null");
-        }
+        ValidationUtil.validate(request);
         
-        // Validate that at least one parameter is provided
-        if (request.getOrderId() == null && (request.getOrigClientOrderId() == null || request.getOrigClientOrderId().trim().isEmpty())) {
-            throw new CoinsApiException("Either orderId or origClientOrderId is required");
-        }
+        UrlBuilder urlBuilder = UrlBuilder.create("")
+            .addParameter("orderId", request.getOrderId())
+            .addParameterIf(request.getOrigClientOrderId() != null && !request.getOrigClientOrderId().trim().isEmpty(), 
+                           "origClientOrderId", request.getOrigClientOrderId());
         
-        // Validate orderId range if provided
-        if (request.getOrderId() != null && request.getOrderId() < 1) {
-            throw new CoinsApiException("OrderId must be greater than 0");
-        }
-        
-        StringBuilder queryBuilder = new StringBuilder();
-        boolean hasParams = false;
-        
-        if (request.getOrderId() != null) {
-            queryBuilder.append("orderId=").append(request.getOrderId());
-            hasParams = true;
-        }
-        if (request.getOrigClientOrderId() != null && !request.getOrigClientOrderId().trim().isEmpty()) {
-            if (hasParams) queryBuilder.append("&");
-            queryBuilder.append("origClientOrderId=").append(request.getOrigClientOrderId());
-        }
-        
-        return httpClient.delete(ORDER_URL, queryBuilder.toString(), new TypeReference<CancelOrderResponse>() {});
+        return httpClient.delete(ORDER_URL, urlBuilder, new TypeReference<CancelOrderResponse>() {});
     }
 
     /**
@@ -254,13 +225,13 @@ public class SpotTradingClient {
      * @throws CoinsApiException if the API call fails
      */
     public List<OrderResponse> getOpenOrders(OpenOrdersRequest request) throws CoinsApiException {
-        StringBuilder queryBuilder = new StringBuilder();
+        UrlBuilder urlBuilder = UrlBuilder.create("");
         
         if (request != null && request.getSymbol() != null && !request.getSymbol().trim().isEmpty()) {
-            queryBuilder.append("symbol=").append(request.getSymbol());
+            urlBuilder.addParameter("symbol", request.getSymbol());
         }
         
-        return httpClient.get(OPEN_ORDERS_URL, queryBuilder.toString(), new TypeReference<List<OrderResponse>>() {});
+        return httpClient.get(OPEN_ORDERS_URL, urlBuilder, new TypeReference<List<OrderResponse>>() {});
     }
 
     /**
@@ -271,19 +242,37 @@ public class SpotTradingClient {
      * @throws CoinsApiException if the API call fails
      */
     public List<CancelOrderResponse> cancelAllOrders(CancelAllOrdersRequest request) throws CoinsApiException {
-        if (request == null) {
-            throw new CoinsApiException("Request cannot be null");
-        }
+        ValidationUtil.validate(request);
         
-        // Validate required symbol parameter
-        if (request.getSymbol() == null || request.getSymbol().trim().isEmpty()) {
-            throw new CoinsApiException("Symbol is required");
-        }
+        UrlBuilder urlBuilder = UrlBuilder.create("")
+            .addParameter("symbol", request.getSymbol());
         
-        StringBuilder queryBuilder = new StringBuilder();
-        queryBuilder.append("symbol=").append(request.getSymbol());
-        
-        return httpClient.delete(OPEN_ORDERS_URL, queryBuilder.toString(), new TypeReference<List<CancelOrderResponse>>() {});
+        return httpClient.delete(OPEN_ORDERS_URL, urlBuilder, new TypeReference<List<CancelOrderResponse>>() {});
+    }
+
+    /**
+     * Build UrlBuilder for cancel replace request
+     * 
+     * @param request Cancel replace request object
+     * @return UrlBuilder
+     */
+    private UrlBuilder buildCancelReplaceUrlBuilder(CancelReplaceRequest request) {
+        return UrlBuilder.create("")
+            .addParameter("symbol", request.getSymbol())
+            .addParameter("side", request.getSide())
+            .addParameter("type", request.getType())
+            .addParameter("timeInForce", request.getTimeInForce())
+            .addParameter("quantity", request.getQuantity())
+            .addParameter("quoteOrderQty", request.getQuoteOrderQty())
+            .addParameter("price", request.getPrice())
+            .addParameter("newClientOrderId", request.getNewClientOrderId())
+            .addParameter("stopPrice", request.getStopPrice())
+            .addParameter("newOrderRespType", request.getNewOrderRespType())
+            .addParameter("stpFlag", request.getStpFlag())
+            .addParameter("cancelOrderId", request.getCancelOrderId())
+            .addParameter("cancelReplaceMode", request.getCancelReplaceMode())
+            .addParameter("cancelRestrictions", request.getCancelRestrictions())
+            .addParameter("cancelOrigClientOrderId", request.getCancelOrigClientOrderId());
     }
 
     /**
@@ -293,51 +282,7 @@ public class SpotTradingClient {
      * @return Query string
      */
     private String buildCancelReplaceQueryString(CancelReplaceRequest request) {
-        StringBuilder queryString = new StringBuilder();
-        queryString.append("symbol=").append(request.getSymbol());
-        queryString.append("&side=").append(request.getSide());
-        queryString.append("&type=").append(request.getType());
-
-        if (request.getTimeInForce() != null) {
-            queryString.append("&timeInForce=").append(request.getTimeInForce());
-        }
-        if (request.getQuantity() != null) {
-            queryString.append("&quantity=").append(request.getQuantity());
-        }
-        if (request.getQuoteOrderQty() != null) {
-            queryString.append("&quoteOrderQty=").append(request.getQuoteOrderQty());
-        }
-        if (request.getPrice() != null) {
-            queryString.append("&price=").append(request.getPrice());
-        }
-        if (request.getNewClientOrderId() != null) {
-            queryString.append("&newClientOrderId=").append(request.getNewClientOrderId());
-        }
-        if (request.getStopPrice() != null) {
-            queryString.append("&stopPrice=").append(request.getStopPrice());
-        }
-        if (request.getNewOrderRespType() != null) {
-            queryString.append("&newOrderRespType=").append(request.getNewOrderRespType());
-        }
-        if (request.getStpFlag() != null) {
-            queryString.append("&stpFlag=").append(request.getStpFlag());
-        }
-        
-        // Cancel replace specific parameters
-        if (request.getCancelOrderId() != null) {
-            queryString.append("&cancelOrderId=").append(request.getCancelOrderId());
-        }
-        if (request.getCancelReplaceMode() != null) {
-            queryString.append("&cancelReplaceMode=").append(request.getCancelReplaceMode());
-        }
-        if (request.getCancelRestrictions() != null) {
-            queryString.append("&cancelRestrictions=").append(request.getCancelRestrictions());
-        }
-        if (request.getCancelOrigClientOrderId() != null) {
-            queryString.append("&cancelOrigClientOrderId=").append(request.getCancelOrigClientOrderId());
-        }
-        
-        return queryString.toString();
+        return buildCancelReplaceUrlBuilder(request).buildQueryString();
     }
 
     /**
@@ -355,8 +300,8 @@ public class SpotTradingClient {
         // Validate required parameters
         validateCancelReplaceRequest(request);
 
-        String queryString = buildCancelReplaceQueryString(request);
-        return httpClient.post(CANCEL_REPLACE_URL, queryString, new TypeReference<Object>() {});
+        UrlBuilder urlBuilder = buildCancelReplaceUrlBuilder(request);
+        return httpClient.post(CANCEL_REPLACE_URL, urlBuilder, new TypeReference<Object>() {});
     }
 
     /**
