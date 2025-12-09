@@ -59,8 +59,8 @@ public class HttpClient {
     /**
      * Execute GET request
      */
-    public <T> T get(String endpoint, String queryString, TypeReference<T> responseType) throws CoinsApiException {
-        String url = buildUrl(endpoint, queryString);
+    public <T> T get(String endpoint, UrlBuilder urlBuilder, TypeReference<T> responseType) throws CoinsApiException {
+        String url = buildUrl(endpoint, urlBuilder);
         Request request = new Request.Builder()
                 .url(url)
                 .addHeader("X-COINS-APIKEY", config.getApiKey())
@@ -72,8 +72,8 @@ public class HttpClient {
     /**
      * Execute POST request
      */
-    public <T> T post(String endpoint, String queryString, TypeReference<T> responseType) throws CoinsApiException {
-        String url = buildUrl(endpoint, queryString);
+    public <T> T post(String endpoint, UrlBuilder urlBuilder, TypeReference<T> responseType) throws CoinsApiException {
+        String url = buildUrl(endpoint, urlBuilder);
         RequestBody body = RequestBody.create("", JSON);
         Request request = new Request.Builder()
                 .url(url)
@@ -145,8 +145,8 @@ public class HttpClient {
     /**
      * Execute DELETE request
      */
-    public <T> T delete(String endpoint, String queryString, TypeReference<T> responseType) throws CoinsApiException {
-        String url = buildUrl(endpoint, queryString);
+    public <T> T delete(String endpoint, UrlBuilder urlBuilder, TypeReference<T> responseType) throws CoinsApiException {
+        String url = buildUrl(endpoint, urlBuilder);
         Request request = new Request.Builder()
                 .url(url)
                 .delete()
@@ -157,38 +157,35 @@ public class HttpClient {
     }
 
     /**
-     * Build complete URL with signature using optimized UrlBuilder
+     * Build complete URL with signature using UrlBuilder
      */
-    private String buildUrl(String endpoint, String queryString) {
+    private String buildUrl(String endpoint, UrlBuilder urlBuilder) {
         long timestamp = System.currentTimeMillis();
         
-        // Create URL builder with base URL and endpoint
-        UrlBuilder urlBuilder = UrlBuilder.create(config.getBaseUrl() + "/" + endpoint);
+        // Create a new UrlBuilder with base URL and endpoint
+        UrlBuilder finalUrlBuilder = UrlBuilder.create(config.getBaseUrl() + "/" + endpoint);
         
-        // Parse existing query string if present
-        if (queryString != null && !queryString.isEmpty()) {
-            String[] params = queryString.split("&");
-            for (String param : params) {
-                String[] keyValue = param.split("=", 2);
-                if (keyValue.length == 2) {
-                    urlBuilder.addParameter(keyValue[0], keyValue[1]);
-                }
+        // Copy parameters from input UrlBuilder if present
+        if (urlBuilder != null) {
+            TreeMap<String, String> existingParams = urlBuilder.getParameters();
+            for (Map.Entry<String, String> entry : existingParams.entrySet()) {
+                finalUrlBuilder.addParameter(entry.getKey(), entry.getValue());
             }
         }
         
         // Add timestamp and recvWindow
-        urlBuilder.addParameter("timestamp", timestamp);
+        finalUrlBuilder.addParameter("timestamp", timestamp);
         if (config.getRecvWindow() > 0) {
-            urlBuilder.addParameter("recvWindow", config.getRecvWindow());
+            finalUrlBuilder.addParameter("recvWindow", config.getRecvWindow());
         }
         
         // Build query string for signature generation
-        String signatureData = urlBuilder.buildQueryString();
+        String signatureData = finalUrlBuilder.buildQueryString();
         String signature = SignatureUtils.generateSignature(signatureData, config.getSecretKey());
         
         // Add signature and build final URL
-        urlBuilder.addParameter("signature", signature);
-        return urlBuilder.build();
+        finalUrlBuilder.addParameter("signature", signature);
+        return finalUrlBuilder.build();
     }
 
     /**

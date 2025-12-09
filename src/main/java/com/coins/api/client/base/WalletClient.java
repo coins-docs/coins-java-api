@@ -57,7 +57,7 @@ public class WalletClient {
         UrlBuilder urlBuilder = UrlBuilder.create("")
             .addParameter("recvWindow", recvWindow);
         
-        return httpClient.get(ACCOUNT_ENDPOINT, urlBuilder.buildQueryString(), new TypeReference<AccountInfoResponse>() {});
+        return httpClient.get(ACCOUNT_ENDPOINT, urlBuilder, new TypeReference<AccountInfoResponse>() {});
     }
     
     /**
@@ -67,7 +67,7 @@ public class WalletClient {
      * @throws CoinsApiException if the API call fails
      */
     public List<WalletAssetConfigVo>  getAllConfigs() throws CoinsApiException {
-        return httpClient.get(CONFIG_GETALL_ENDPOINT, "", new TypeReference<List<WalletAssetConfigVo> >() {});
+        return httpClient.get(CONFIG_GETALL_ENDPOINT, UrlBuilder.create(""), new TypeReference<List<WalletAssetConfigVo> >() {});
     }
     
     /**
@@ -85,7 +85,7 @@ public class WalletClient {
             .addParameter("coin", request.getCoin())
             .addParameter("network", request.getNetwork());
         
-        return httpClient.get(DEPOSIT_ADDRESS_ENDPOINT, urlBuilder.buildQueryString(), new TypeReference<DepositAddress>() {});
+        return httpClient.get(DEPOSIT_ADDRESS_ENDPOINT, urlBuilder, new TypeReference<DepositAddress>() {});
     }
     
     /**
@@ -123,7 +123,7 @@ public class WalletClient {
             .addParameter("offset", offset)
             .addParameter("limit", limit);
         
-        return httpClient.get(DEPOSIT_HISTORY_ENDPOINT, urlBuilder.buildQueryString(), new TypeReference<List<DepositRecordVo>>() {});
+        return httpClient.get(DEPOSIT_HISTORY_ENDPOINT, urlBuilder, new TypeReference<List<DepositRecordVo>>() {});
     }
     
     /**
@@ -146,7 +146,7 @@ public class WalletClient {
             .addParameter("offset", request.getOffset())
             .addParameter("limit", request.getLimit());
         
-        return httpClient.get(WITHDRAW_HISTORY_ENDPOINT, urlBuilder.buildQueryString(), new TypeReference<List<WithdrawRecordVo>>() {});
+        return httpClient.get(WITHDRAW_HISTORY_ENDPOINT, urlBuilder, new TypeReference<List<WithdrawRecordVo>>() {});
     }
     
     /**
@@ -182,7 +182,7 @@ public class WalletClient {
             .addParameter("pageNum", request.getPageNum())
             .addParameter("pageSize", request.getPageSize());
         
-        return httpClient.get(TRANSACTION_HISTORY_ENDPOINT, urlBuilder.buildQueryString(), new TypeReference<GetTransactionHistoryResponse>() {});
+        return httpClient.get(TRANSACTION_HISTORY_ENDPOINT, urlBuilder, new TypeReference<GetTransactionHistoryResponse>() {});
     }
     
     /**
@@ -199,6 +199,6 @@ public class WalletClient {
             .addParameter("network", request.getNetwork())
             .addParameter("address", request.getAddress());
         
-        return httpClient.get(ADDRESS_WHITELIST_ENDPOINT, urlBuilder.buildQueryString(), new TypeReference<List<AddressWhitelistVo>>() {});
+        return httpClient.get(ADDRESS_WHITELIST_ENDPOINT, urlBuilder, new TypeReference<List<AddressWhitelistVo>>() {});
     }
 }

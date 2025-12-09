@@ -44,7 +44,7 @@ public class ConvertClient {
         UrlBuilder urlBuilder = UrlBuilder.create("")
             .addParameter("type", request.getType());
 
-        GetSupportedTradingPairsResponse response = httpClient.post(SUPPORTED_TRADING_PAIRS_URL, urlBuilder.buildQueryString(),
+        GetSupportedTradingPairsResponse response = httpClient.post(SUPPORTED_TRADING_PAIRS_URL, urlBuilder,
                 new TypeReference<GetSupportedTradingPairsResponse>() {});
         return response.getData();
     }

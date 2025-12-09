@@ -84,7 +84,7 @@ public class FiatClient {
             .addParameter("internalOrderId", request.getInternalOrderId())
             .addParameter("externalOrderId", request.getExternalOrderId());
 
-        APIResponse<FiatOrderCommonResponse> response = httpClient.get(ORDER_DETAILS_ENDPOINT, urlBuilder.buildQueryString(), new TypeReference<APIResponse<FiatOrderCommonResponse>>() {});
+        APIResponse<FiatOrderCommonResponse> response = httpClient.get(ORDER_DETAILS_ENDPOINT, urlBuilder, new TypeReference<APIResponse<FiatOrderCommonResponse>>() {});
 
         return response.getData();
     }
@@ -186,7 +186,7 @@ public class FiatClient {
         UrlBuilder urlBuilder = UrlBuilder.create("")
             .addParameter("requestId", request.getRequestId());
 
-        APIResponse response = httpClient.get(GET_QR_CODE_ENDPOINT, urlBuilder.buildQueryString(), new TypeReference<APIResponse<OpenApiQrCodeGenerateResponse>>() {});
+        APIResponse response = httpClient.get(GET_QR_CODE_ENDPOINT, urlBuilder, new TypeReference<APIResponse<OpenApiQrCodeGenerateResponse>>() {});
         return (OpenApiQrCodeGenerateResponse) response.getData();
     }
     
@@ -204,7 +204,7 @@ public class FiatClient {
         UrlBuilder urlBuilder = UrlBuilder.create("")
             .addParameter("status", request.getStatus());
 
-        APIResponse response = httpClient.get(GET_STATIC_QR_CODE_LIST_ENDPOINT, urlBuilder.buildQueryString(), new TypeReference<APIResponse<List<OpenApiQrCodeResponse>>>() {});
+        APIResponse response = httpClient.get(GET_STATIC_QR_CODE_LIST_ENDPOINT, urlBuilder, new TypeReference<APIResponse<List<OpenApiQrCodeResponse>>>() {});
         return (List<OpenApiQrCodeResponse>) response.getData();
     }
 }

@@ -51,7 +51,7 @@ public class InvoicePaymentClient {
             .addParameter("supported_payment_collectors", request.getSupportedPaymentCollectors())
             .addParameter("expires_at", request.getExpiresAt());
         
-        return httpClient.post(PAYMENT_REQUEST_ENDPOINT, urlBuilder.buildQueryString(), new TypeReference<PaymentRequestResponse>() {});
+        return httpClient.post(PAYMENT_REQUEST_ENDPOINT, urlBuilder, new TypeReference<PaymentRequestResponse>() {});
     }
     
     /**
@@ -71,7 +71,7 @@ public class InvoicePaymentClient {
             .addParameter("end_time", request.getEndTime())
             .addParameter("limit", request.getLimit());
         
-        return httpClient.get(GET_PAYMENT_REQUEST_ENDPOINT, urlBuilder.buildQueryString(), new TypeReference<PaymentRequestListResponse>() {});
+        return httpClient.get(GET_PAYMENT_REQUEST_ENDPOINT, urlBuilder, new TypeReference<PaymentRequestListResponse>() {});
     }
     
     /**
@@ -88,7 +88,7 @@ public class InvoicePaymentClient {
         UrlBuilder urlBuilder = UrlBuilder.create("")
             .addParameter("id", request.getId());
         
-        return httpClient.post(CANCEL_PAYMENT_REQUEST_ENDPOINT, urlBuilder.buildQueryString(), new TypeReference<PaymentRequestResponse>() {});
+        return httpClient.post(CANCEL_PAYMENT_REQUEST_ENDPOINT, urlBuilder, new TypeReference<PaymentRequestResponse>() {});
     }
 
     /**
@@ -105,6 +105,6 @@ public class InvoicePaymentClient {
         UrlBuilder urlBuilder = UrlBuilder.create("")
             .addParameter("id", request.getId());
         
-        return httpClient.post(PAYMENT_REQUEST_REMINDER_ENDPOINT, urlBuilder.buildQueryString(), new TypeReference<Boolean>() {});
+        return httpClient.post(PAYMENT_REQUEST_REMINDER_ENDPOINT, urlBuilder, new TypeReference<Boolean>() {});
     }
 }

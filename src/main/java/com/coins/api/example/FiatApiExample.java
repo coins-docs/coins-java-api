@@ -11,6 +11,7 @@ import com.coins.api.model.FiatChannelConfigResponse;
 import com.coins.api.model.FiatOrderDetailsRequest;
 import com.coins.api.model.FiatOrderCommonResponse;
 import com.coins.api.model.OpenApiQrCodeGenerateRequest;
+import com.coins.api.model.OpenApiStaticQrCodeGenResponse;
 import com.coins.api.model.QueryFiatOrderRequest;
 import com.coins.api.model.OpenApiStaticQrCodeGenerateRequest;
 import com.coins.api.model.OpenApiUpdateQrCodeRequest;
