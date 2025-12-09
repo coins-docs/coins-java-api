@@ -16,24 +16,24 @@ import org.hibernate.validator.constraints.Range;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class WithdrawHistoryQueryRequest {
 
-    @Length(max=10)
+    @Length(max=10, message = "coin length must not exceed 10 characters")
     private String coin;
 
-    @Length(max=64)
+    @Length(max=64, message = "withdrawOrderId length must not exceed 64 characters")
     private String withdrawOrderId;
 
-    @Range(min=0, max=2)
+    @Range(min=0, max=2, message = "status must be between 0 and 2")
     private Integer status;
 
-    @Min(value=0)
+    @Min(value=0, message = "offset must be greater than or equal to 0")
     private Integer offset;
 
-    @Range(min=1, max=1000)
+    @Range(min=1, max=1000, message = "limit must be between 1 and 1000")
     private Integer limit;
 
-    @Min(value=1)
+    @Min(value=1, message = "startTime must be greater than 0")
     private Long startTime;
 
-    @Min(value=1)
+    @Min(value=1, message = "endTime must be greater than 0")
     private Long endTime;
 }

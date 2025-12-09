@@ -14,7 +14,7 @@ import lombok.NoArgsConstructor;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class GetTransactionHistoryRequest {
 
-    @NotNull
+    @NotNull(message = "tokenId cannot be null")
     private String tokenId;
 
     private Long subUserId;

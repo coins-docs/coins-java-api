@@ -53,7 +53,7 @@ public class ConvertClient {
      * Get conversion quote (get-quote)
      */
     public ConvertQuote getQuote(GetQuoteRequest request) throws CoinsApiException {
-        ValidationUtil.validate(request, Locale.ENGLISH);
+        ValidationUtil.validate(request);
         
         GetQuoteResponse response = httpClient.postWithBody(GET_QUOTE_URL, request,
                 new TypeReference<GetQuoteResponse>() {});
@@ -64,7 +64,7 @@ public class ConvertClient {
      * Accept quote and execute conversion (accept-quote)
      */
     public AcceptQuoteResponse acceptQuote(AcceptQuoteRequest request) throws CoinsApiException {
-        ValidationUtil.validate(request, Locale.ENGLISH);
+        ValidationUtil.validate(request);
         
         return httpClient.postWithBody(ACCEPT_QUOTE_URL, request,
                 new TypeReference<AcceptQuoteResponse>() {});
@@ -74,7 +74,7 @@ public class ConvertClient {
      * Query conversion order history (query-order-history)
      */
     public ConvertOrderHistoryResponse queryOrderHistory(GetOrderHistoryRequest request) throws CoinsApiException {
-        ValidationUtil.validate(request, Locale.ENGLISH);
+        ValidationUtil.validate(request);
         
         return httpClient.postWithBody(QUERY_ORDER_HISTORY_URL, request, 
                 new TypeReference<ConvertOrderHistoryResponse>() {});

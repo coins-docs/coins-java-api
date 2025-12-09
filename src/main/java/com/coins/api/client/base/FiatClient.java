@@ -63,7 +63,7 @@ public class FiatClient {
      */
     public List<FiatChannelConfigResponse> getSupportedChannels(FiatChannelConfigRequest request) 
             throws CoinsApiException {
-        ValidationUtil.validate(request, Locale.ENGLISH);
+        ValidationUtil.validate(request);
         APIResponse<List<FiatChannelConfigResponse>> response = httpClient.postWithBody(SUPPORT_CHANNEL_ENDPOINT, request, new TypeReference<APIResponse<List<FiatChannelConfigResponse>>>() {});
 
         return response.getData();
@@ -77,7 +77,7 @@ public class FiatClient {
      * @throws CoinsApiException if the API call fails
      */
     public FiatOrderCommonResponse getOrderDetails(FiatOrderDetailsRequest request) throws CoinsApiException {
-        ValidationUtil.validate(request, Locale.ENGLISH);
+        ValidationUtil.validate(request);
         
         // Use optimized UrlBuilder for query string construction
         UrlBuilder urlBuilder = UrlBuilder.create("")
@@ -97,7 +97,7 @@ public class FiatClient {
      * @throws CoinsApiException if the API call fails
      */
     public WebPageResponse<FiatOrderCommonResponse> getTransactionHistory(QueryFiatOrderRequest request) throws CoinsApiException {
-        ValidationUtil.validate(request, Locale.ENGLISH);
+        ValidationUtil.validate(request);
         WebPageResponse<FiatOrderCommonResponse> clientResponse = httpClient.postWithBody(TRANSACTION_HISTORY_ENDPOINT, request, new TypeReference<WebPageResponse<FiatOrderCommonResponse>>() {});
 
         return clientResponse;
@@ -111,7 +111,7 @@ public class FiatClient {
      * @throws CoinsApiException if the API call fails
      */
     public FiatCashOutResponse cashOut(FiatCashOutRequest request) throws CoinsApiException {
-        ValidationUtil.validate(request, Locale.ENGLISH);
+        ValidationUtil.validate(request);
         APIResponse<FiatCashOutResponse> response = httpClient.postWithBody(CASH_OUT_ENDPOINT, request, new TypeReference<APIResponse<FiatCashOutResponse>>() {});
         return response.getData();
     }
@@ -124,7 +124,7 @@ public class FiatClient {
      * @throws CoinsApiException if the API call fails
      */
     public OpenApiQrCodeGenerateResponse generateQrCode(OpenApiQrCodeGenerateRequest request) throws CoinsApiException {
-        ValidationUtil.validate(request, Locale.ENGLISH);
+        ValidationUtil.validate(request);
         // Use URL-encoded body format for proper signature calculation as per API documentation
         APIResponse  response = httpClient.postWithBody(GENERATE_QR_CODE_ENDPOINT, request, new TypeReference<APIResponse<OpenApiQrCodeGenerateResponse>>() {});
         return (OpenApiQrCodeGenerateResponse) response.getData();
@@ -138,7 +138,7 @@ public class FiatClient {
      * @throws CoinsApiException if the API call fails
      */
     public OpenApiStaticQrCodeGenResponse generateStaticQrCode(OpenApiStaticQrCodeGenerateRequest request) throws CoinsApiException {
-        ValidationUtil.validate(request, Locale.ENGLISH);
+        ValidationUtil.validate(request);
         APIResponse response = httpClient.postWithBody(GENERATE_STATIC_QR_CODE_ENDPOINT, request, new TypeReference<APIResponse<OpenApiStaticQrCodeGenResponse>>() {});
 
         return (OpenApiStaticQrCodeGenResponse) response.getData();
@@ -152,7 +152,7 @@ public class FiatClient {
      * @throws CoinsApiException if the API call fails
      */
     public OpenApiCancelQrCodeResponse cancelQrCode(FiatCancelQrCodeRequest request) throws CoinsApiException {
-        ValidationUtil.validate(request, Locale.ENGLISH);
+        ValidationUtil.validate(request);
         APIResponse response = httpClient.postWithBody(CANCEL_QR_CODE_ENDPOINT, request, new TypeReference<APIResponse<OpenApiCancelQrCodeResponse>>() {});
 
         return (OpenApiCancelQrCodeResponse) response.getData();
@@ -166,7 +166,7 @@ public class FiatClient {
      * @throws CoinsApiException if the API call fails
      */
     public OpenApiUpdateQrCodeResponse updateQrCode(OpenApiUpdateQrCodeRequest request) throws CoinsApiException {
-        ValidationUtil.validate(request, Locale.ENGLISH);
+        ValidationUtil.validate(request);
         APIResponse response = httpClient.postWithBody(UPDATE_QR_CODE_ENDPOINT, request, new TypeReference<APIResponse<OpenApiUpdateQrCodeResponse>>() {});
 
         return (OpenApiUpdateQrCodeResponse) response.getData();
@@ -180,7 +180,7 @@ public class FiatClient {
      * @throws CoinsApiException if the API call fails
      */
     public OpenApiQrCodeGenerateResponse getQrCode(GetQrCodeRequest request) throws CoinsApiException {
-        ValidationUtil.validate(request, Locale.ENGLISH);
+        ValidationUtil.validate(request);
         
         // Use optimized UrlBuilder for query string construction
         UrlBuilder urlBuilder = UrlBuilder.create("")
@@ -198,7 +198,7 @@ public class FiatClient {
      * @throws CoinsApiException if the API call fails
      */
     public List<OpenApiQrCodeResponse> getStaticQrCodeList(GetStaticQrCodeListRequest request) throws CoinsApiException {
-        ValidationUtil.validate(request, Locale.ENGLISH);
+        ValidationUtil.validate(request);
         
         // Use optimized UrlBuilder for query string construction
         UrlBuilder urlBuilder = UrlBuilder.create("")

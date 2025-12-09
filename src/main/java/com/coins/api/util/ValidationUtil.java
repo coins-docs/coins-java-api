@@ -1,7 +1,6 @@
 package com.coins.api.util;
 
 import com.coins.api.exception.CoinsApiException;
-import java.util.Locale;
 import java.util.Set;
 import java.util.stream.Collectors;
 import javax.validation.ConstraintViolation;
@@ -81,6 +80,7 @@ public class ValidationUtil {
     
     /**
      * Validate an object and throw exception if validation fails
+     * Messages are defined in validation annotations and will be interpolated automatically
      * 
      * @param object Object to validate
      * @throws CoinsApiException if validation fails
@@ -91,66 +91,13 @@ public class ValidationUtil {
         if (!violations.isEmpty()) {
             String errorMessage = violations.stream()
                     .map(violation -> {
-                        // Get the message with English locale
+                        // Use the message from annotation directly
                         String message = violation.getMessage();
                         return violation.getPropertyPath() + ": " + message;
                     })
                     .collect(Collectors.joining(", "));
             
             throw new CoinsApiException("Validation failed: " + errorMessage);
-        }
-    }
-    
-    /**
-     * Validate an object with specific locale and throw exception if validation fails
-     * 
-     * @param object Object to validate
-     * @param locale Locale for validation messages
-     * @throws CoinsApiException if validation fails
-     */
-    public static <T> void validate(T object, Locale locale) throws CoinsApiException {
-        Set<ConstraintViolation<T>> violations = getValidator().validate(object);
-        
-        if (!violations.isEmpty()) {
-            String errorMessage = violations.stream()
-                    .map(violation -> {
-                        // For English messages, we'll provide custom messages for common validations
-                        String message = getEnglishMessage(violation, locale);
-                        return violation.getPropertyPath() + ": " + message;
-                    })
-                    .collect(Collectors.joining(", "));
-            
-            throw new CoinsApiException("Validation failed: " + errorMessage);
-        }
-    }
-    
-    private static <T> String getEnglishMessage(ConstraintViolation<T> violation, Locale locale) {
-        String annotationType = violation.getConstraintDescriptor().getAnnotation().annotationType().getSimpleName();
-        
-        switch (annotationType) {
-            case "NotNull":
-                return "must not be null";
-            case "NotBlank":
-                return "must not be blank";
-            case "DecimalMin":
-                Object minValue = violation.getConstraintDescriptor().getAttributes().get("value");
-                Boolean inclusive = (Boolean) violation.getConstraintDescriptor().getAttributes().get("inclusive");
-                if (inclusive != null && !inclusive) {
-                    return "must be greater than " + minValue;
-                } else {
-                    return "must be greater than or equal to " + minValue;
-                }
-            case "Length":
-                Object max = violation.getConstraintDescriptor().getAttributes().get("max");
-                return "length must be less than or equal to " + max;
-            case "Min":
-                Object minVal = violation.getConstraintDescriptor().getAttributes().get("value");
-                return "must be greater than or equal to " + minVal;
-            case "Max":
-                Object maxVal = violation.getConstraintDescriptor().getAttributes().get("value");
-                return "must be less than or equal to " + maxVal;
-            default:
-                return violation.getMessage();
         }
     }
     

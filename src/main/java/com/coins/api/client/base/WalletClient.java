@@ -78,7 +78,7 @@ public class WalletClient {
      * @throws CoinsApiException if the API call fails
      */
     public DepositAddress getDepositAddress(DepositAddressApiRequest request) throws CoinsApiException {
-        ValidationUtil.validate(request, Locale.ENGLISH);
+        ValidationUtil.validate(request);
 
         // Use optimized UrlBuilder for query string construction
         UrlBuilder urlBuilder = UrlBuilder.create("")
@@ -134,7 +134,7 @@ public class WalletClient {
      * @throws CoinsApiException if the API call fails
      */
     public List<WithdrawRecordVo> getWithdrawHistory(WithdrawHistoryQueryRequest request) throws CoinsApiException {
-        ValidationUtil.validate(request, Locale.ENGLISH);
+        ValidationUtil.validate(request);
         
         // Use optimized UrlBuilder for query string construction
         UrlBuilder urlBuilder = UrlBuilder.create("")
@@ -157,7 +157,7 @@ public class WalletClient {
      * @throws CoinsApiException if the API call fails
      */
     public WithdrawApplyVo applyWithdraw(WithdrawApplyRequest request) throws CoinsApiException {
-        ValidationUtil.validate(request, Locale.ENGLISH);
+        ValidationUtil.validate(request);
         
         // Use postWithBody to send JSON request body
         return httpClient.postWithBody(WITHDRAW_APPLY_ENDPOINT, request, new TypeReference<WithdrawApplyVo>() {});
@@ -171,7 +171,7 @@ public class WalletClient {
      * @throws CoinsApiException if the API call fails
      */
     public GetTransactionHistoryResponse getTransactionHistory(GetTransactionHistoryRequest request) throws CoinsApiException {
-        ValidationUtil.validate(request, Locale.ENGLISH);
+        ValidationUtil.validate(request);
         
         // Use optimized UrlBuilder for query string construction
         UrlBuilder urlBuilder = UrlBuilder.create("")

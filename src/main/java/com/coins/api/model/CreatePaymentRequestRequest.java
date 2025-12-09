@@ -17,17 +17,17 @@ import lombok.NoArgsConstructor;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class CreatePaymentRequestRequest {
     
-    @NotEmpty
+    @NotEmpty(message = "payerContactInfo cannot be empty")
     private String payerContactInfo;
     
-    @NotEmpty
+    @NotEmpty(message = "receivingAccount cannot be empty")
     private String receivingAccount;
     
-    @NotNull
-    @DecimalMin(value = "0.0", inclusive = false)
+    @NotNull(message = "amount cannot be null")
+    @DecimalMin(value = "0.0", inclusive = false, message = "amount must be greater than 0")
     private BigDecimal amount;
     
-    @NotEmpty
+    @NotEmpty(message = "message cannot be empty")
     private String message;
     
     private String supportedPaymentCollectors;

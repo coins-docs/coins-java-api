@@ -13,7 +13,7 @@ import javax.validation.constraints.Min;
 @AllArgsConstructor
 public class GetOrderRequest {
     
-    @Min(1)
+    @Min(value = 1, message = "orderId must be greater than 0")
     private Long orderId;
     
     private String origClientOrderId;

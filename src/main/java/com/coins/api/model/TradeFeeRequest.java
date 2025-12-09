@@ -12,6 +12,6 @@ import org.hibernate.validator.constraints.Length;
 @AllArgsConstructor
 public class TradeFeeRequest {
     
-    @Length(max = 20)
+    @Length(max = 20, message = "symbol length must not exceed 20 characters")
     private String symbol;
 }

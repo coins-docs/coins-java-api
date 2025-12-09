@@ -53,7 +53,7 @@ public class SpotTradingClient {
     public List<TradeVo> getMyTrades(@Valid HistoryTradeRequest request) throws CoinsApiException {
 
         // Validate request parameters with English locale
-        ValidationUtil.validate(request, Locale.ENGLISH);
+        ValidationUtil.validate(request);
         
         // Use optimized UrlBuilder for query string construction
         UrlBuilder urlBuilder = UrlBuilder.create("")
@@ -77,7 +77,7 @@ public class SpotTradingClient {
     public List<TradeFeeResponse> getTradeFee(@Valid TradeFeeRequest request) throws CoinsApiException {
         if (request != null) {
             // Validate request parameters with English locale
-            ValidationUtil.validate(request, Locale.ENGLISH);
+            ValidationUtil.validate(request);
         }
 
         // Use optimized UrlBuilder for query string construction
@@ -124,7 +124,7 @@ public class SpotTradingClient {
         }
         
         // Validate request parameters with English locale
-        ValidationUtil.validate(request, Locale.ENGLISH);
+        ValidationUtil.validate(request);
 
         String queryString = buildNewOrderQueryString(request);
         return httpClient.post(ORDER_TEST_URL, queryString, new TypeReference<Object>() {});
@@ -143,7 +143,7 @@ public class SpotTradingClient {
         }
         
         // Validate request parameters with English locale
-        ValidationUtil.validate(request, Locale.ENGLISH);
+        ValidationUtil.validate(request);
 
         String queryString = buildNewOrderQueryString(request);
         return httpClient.post(ORDER_URL, queryString, new TypeReference<NewOrderResponse>() {});

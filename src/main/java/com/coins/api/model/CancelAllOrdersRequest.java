@@ -13,6 +13,6 @@ import javax.validation.constraints.NotBlank;
 @AllArgsConstructor
 public class CancelAllOrdersRequest {
     
-    @NotBlank
+    @NotBlank(message = "symbol cannot be blank")
     private String symbol;
 }
