@@ -276,11 +276,13 @@ Complete examples are available in the `src/main/java/com/coins/api/example/` di
 
 The SDK uses the following key dependencies:
 
-- **OkHttp 4.11.0** - HTTP client
-- **Jackson 2.15.2** - JSON processing
-- **SLF4J 2.0.7** - Logging
-- **Lombok 1.18.30** - Code generation
-- **Hibernate Validator 6.2.5** - Request validation
+- **OkHttp 4.12.0** - HTTP client
+- **Jackson 2.16.1** - JSON processing (latest secure version)
+- **SLF4J 2.0.9** - Logging
+- **Lombok 1.18.32** - Code generation
+- **Hibernate Validator 8.0.1.Final** - Request validation (Jakarta EE)
+- **Jakarta Validation API 3.0.2** - Modern validation specifications
+- **Expressly 5.0.0** - Expression Language implementation
 
 ## Building from Source
 
