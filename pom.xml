@@ -16,10 +16,20 @@
         <maven.compiler.source>11</maven.compiler.source>
         <maven.compiler.target>11</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <jackson.version>2.15.2</jackson.version>
-        <okhttp.version>4.11.0</okhttp.version>
-        <slf4j.version>2.0.7</slf4j.version>
-        <junit.version>5.10.0</junit.version>
+        <!-- Updated Jackson to latest secure version -->
+        <jackson.version>2.16.1</jackson.version>
+        <!-- Updated OkHttp to latest version -->
+        <okhttp.version>4.12.0</okhttp.version>
+        <!-- Updated SLF4J to latest version -->
+        <slf4j.version>2.0.9</slf4j.version>
+        <!-- Updated JUnit to latest version -->
+        <junit.version>5.10.1</junit.version>
+        <!-- Added Hibernate Validator version property -->
+        <hibernate.validator.version>8.0.1.Final</hibernate.validator.version>
+        <!-- Added Jakarta Validation API version -->
+        <jakarta.validation.version>3.0.2</jakarta.validation.version>
+        <!-- Added Expression Language version -->
+        <jakarta.el.version>5.0.0</jakarta.el.version>
     </properties>
 
     <dependencies>
@@ -59,29 +69,29 @@
             <version>${slf4j.version}</version>
         </dependency>
 
-        <!-- Validation -->
+        <!-- Validation - Updated to Jakarta EE specifications -->
         <dependency>
-            <groupId>javax.validation</groupId>
-            <artifactId>validation-api</artifactId>
-            <version>2.0.1.Final</version>
+            <groupId>jakarta.validation</groupId>
+            <artifactId>jakarta.validation-api</artifactId>
+            <version>${jakarta.validation.version}</version>
         </dependency>
         <dependency>
             <groupId>org.hibernate.validator</groupId>
             <artifactId>hibernate-validator</artifactId>
-            <version>6.2.5.Final</version>
+            <version>${hibernate.validator.version}</version>
         </dependency>
-        <!-- Expression Language dependencies for Hibernate Validator -->
+        <!-- Expression Language dependencies for Hibernate Validator 8.x -->
         <dependency>
-            <groupId>org.glassfish</groupId>
-            <artifactId>javax.el</artifactId>
-            <version>3.0.0</version>
+            <groupId>org.glassfish.expressly</groupId>
+            <artifactId>expressly</artifactId>
+            <version>${jakarta.el.version}</version>
         </dependency>
 
         <!-- Lombok -->
         <dependency>
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
-            <version>1.18.30</version>
+            <version>1.18.32</version>
             <scope>provided</scope>
         </dependency>
 
@@ -95,13 +105,13 @@
         <dependency>
             <groupId>org.mockito</groupId>
             <artifactId>mockito-core</artifactId>
-            <version>5.5.0</version>
+            <version>5.8.0</version>
             <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>org.mockito</groupId>
             <artifactId>mockito-junit-jupiter</artifactId>
-            <version>5.5.0</version>
+            <version>5.8.0</version>
             <scope>test</scope>
         </dependency>
     </dependencies>
@@ -119,7 +129,7 @@
                         <path>
                             <groupId>org.projectlombok</groupId>
                             <artifactId>lombok</artifactId>
-                            <version>1.18.30</version>
+                            <version>1.18.32</version>
                         </path>
                     </annotationProcessorPaths>
                 </configuration>
