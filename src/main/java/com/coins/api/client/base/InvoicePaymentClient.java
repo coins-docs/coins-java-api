@@ -42,7 +42,6 @@ public class InvoicePaymentClient {
     public PaymentRequestResponse createPaymentRequest(CreatePaymentRequestRequest request) throws CoinsApiException {
         ValidationUtil.validate(request);
         
-        // Use optimized UrlBuilder for query string construction
         UrlBuilder urlBuilder = UrlBuilder.create("")
             .addParameter("payer_contact_info", request.getPayerContactInfo())
             .addParameter("receiving_account", request.getReceivingAccount())
@@ -64,7 +63,6 @@ public class InvoicePaymentClient {
     public PaymentRequestListResponse getPaymentRequests(GetPaymentRequestRequest request) throws CoinsApiException {
         ValidationUtil.validate(request);
         
-        // Use optimized UrlBuilder for query string construction
         UrlBuilder urlBuilder = UrlBuilder.create("")
             .addParameter("id", request.getId())
             .addParameter("start_time", request.getStartTime())
@@ -84,7 +82,6 @@ public class InvoicePaymentClient {
     public PaymentRequestResponse cancelPaymentRequest(PaymentRequestOperationRequest request) throws CoinsApiException {
         ValidationUtil.validate(request);
         
-        // Use optimized UrlBuilder for query string construction
         UrlBuilder urlBuilder = UrlBuilder.create("")
             .addParameter("id", request.getId());
         
@@ -101,7 +98,6 @@ public class InvoicePaymentClient {
     public Boolean sendPaymentRequestReminder(PaymentRequestOperationRequest request) throws CoinsApiException {
         ValidationUtil.validate(request);
         
-        // Use optimized UrlBuilder for query string construction
         UrlBuilder urlBuilder = UrlBuilder.create("")
             .addParameter("id", request.getId());
         

@@ -40,7 +40,6 @@ public class ConvertClient {
      */
     public List<SupportedTradingPair> getSupportedTradingPairs(GetSupportedTradingPairsRequest request) throws CoinsApiException {
 
-        // Use optimized UrlBuilder for query string construction
         UrlBuilder urlBuilder = UrlBuilder.create("")
             .addParameter("type", request.getType());
 

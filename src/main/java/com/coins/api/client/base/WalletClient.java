@@ -53,7 +53,6 @@ public class WalletClient {
      * @throws CoinsApiException if the API call fails
      */
     public AccountInfoResponse getAccount(Long recvWindow) throws CoinsApiException {
-        // Use optimized UrlBuilder for query string construction
         UrlBuilder urlBuilder = UrlBuilder.create("")
             .addParameter("recvWindow", recvWindow);
         
@@ -80,7 +79,6 @@ public class WalletClient {
     public DepositAddress getDepositAddress(DepositAddressApiRequest request) throws CoinsApiException {
         ValidationUtil.validate(request);
 
-        // Use optimized UrlBuilder for query string construction
         UrlBuilder urlBuilder = UrlBuilder.create("")
             .addParameter("coin", request.getCoin())
             .addParameter("network", request.getNetwork());
@@ -112,7 +110,6 @@ public class WalletClient {
             Integer offset,
             Integer limit) throws CoinsApiException {
         
-        // Use optimized UrlBuilder for query string construction
         UrlBuilder urlBuilder = UrlBuilder.create("")
             .addParameter("coin", coin)
             .addParameter("txId", txId)
@@ -136,7 +133,6 @@ public class WalletClient {
     public List<WithdrawRecordVo> getWithdrawHistory(WithdrawHistoryQueryRequest request) throws CoinsApiException {
         ValidationUtil.validate(request);
         
-        // Use optimized UrlBuilder for query string construction
         UrlBuilder urlBuilder = UrlBuilder.create("")
             .addParameter("coin", request.getCoin())
             .addParameter("withdrawOrderId", request.getWithdrawOrderId())
@@ -173,7 +169,6 @@ public class WalletClient {
     public GetTransactionHistoryResponse getTransactionHistory(GetTransactionHistoryRequest request) throws CoinsApiException {
         ValidationUtil.validate(request);
         
-        // Use optimized UrlBuilder for query string construction
         UrlBuilder urlBuilder = UrlBuilder.create("")
             .addParameter("tokenId", request.getTokenId())
             .addParameter("startTime", request.getStartTime())
@@ -193,7 +188,6 @@ public class WalletClient {
      * @throws CoinsApiException if the API call fails
      */
     public List<AddressWhitelistVo> getAddressWhitelist(WithdrawWhitelistQueryRequest request) throws CoinsApiException {
-        // Use optimized UrlBuilder for query string construction
         UrlBuilder urlBuilder = UrlBuilder.create("")
             .addParameter("coin", request.getCoin())
             .addParameter("network", request.getNetwork())

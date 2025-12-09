@@ -79,7 +79,6 @@ public class FiatClient {
     public FiatOrderCommonResponse getOrderDetails(FiatOrderDetailsRequest request) throws CoinsApiException {
         ValidationUtil.validate(request);
         
-        // Use optimized UrlBuilder for query string construction
         UrlBuilder urlBuilder = UrlBuilder.create("")
             .addParameter("internalOrderId", request.getInternalOrderId())
             .addParameter("externalOrderId", request.getExternalOrderId());
@@ -182,7 +181,6 @@ public class FiatClient {
     public OpenApiQrCodeGenerateResponse getQrCode(GetQrCodeRequest request) throws CoinsApiException {
         ValidationUtil.validate(request);
         
-        // Use optimized UrlBuilder for query string construction
         UrlBuilder urlBuilder = UrlBuilder.create("")
             .addParameter("requestId", request.getRequestId());
 
@@ -198,9 +196,6 @@ public class FiatClient {
      * @throws CoinsApiException if the API call fails
      */
     public List<OpenApiQrCodeResponse> getStaticQrCodeList(GetStaticQrCodeListRequest request) throws CoinsApiException {
-        ValidationUtil.validate(request);
-        
-        // Use optimized UrlBuilder for query string construction
         UrlBuilder urlBuilder = UrlBuilder.create("")
             .addParameter("status", request.getStatus());
 

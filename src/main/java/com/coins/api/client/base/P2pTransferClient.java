@@ -40,7 +40,6 @@ public class P2pTransferClient {
      * @throws CoinsApiException if the API call fails
      */
     public GetBalancesResponse getCryptoAccounts(String currency) throws CoinsApiException {
-        // Use optimized UrlBuilder for query string construction
         UrlBuilder urlBuilder = UrlBuilder.create("")
             .addParameter("currency", currency);
 
@@ -85,7 +84,6 @@ public class P2pTransferClient {
             String fromAddress,
             Long recvWindow) throws CoinsApiException {
         
-        // Use optimized UrlBuilder for query string construction
         UrlBuilder urlBuilder = UrlBuilder.create("")
             .addParameter("client_transfer_id", clientTransferId)
             .addParameter("page", page)

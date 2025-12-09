@@ -55,7 +55,6 @@ public class SpotTradingClient {
         // Validate request parameters with English locale
         ValidationUtil.validate(request);
         
-        // Use optimized UrlBuilder for query string construction
         UrlBuilder urlBuilder = UrlBuilder.create("")
             .addParameter("symbol", request.getSymbol())
             .addParameterIf(request.getOrderId() != null && request.getOrderId() > 0, "orderId", request.getOrderId())
@@ -80,7 +79,6 @@ public class SpotTradingClient {
             ValidationUtil.validate(request);
         }
 
-        // Use optimized UrlBuilder for query string construction
         UrlBuilder urlBuilder = UrlBuilder.create("");
         if (request != null && request.getSymbol() != null && !request.getSymbol().trim().isEmpty()) {
             urlBuilder.addParameter("symbol", request.getSymbol());
@@ -111,7 +109,7 @@ public class SpotTradingClient {
     }
 
     /**
-     * Build query string for new order request using optimized UrlBuilder
+     * Build query string for new order request
      * 
      * @param request New order request object
      * @return Query string
@@ -166,22 +164,18 @@ public class SpotTradingClient {
      * @throws CoinsApiException if the API call fails
      */
     public List<OrderResponse> getHistoryOrders(HistoryOrdersRequest request) throws CoinsApiException {
-        // Use optimized UrlBuilder for query string construction
+        if (request != null) {
+            ValidationUtil.validate(request);
+        }
+        
         UrlBuilder urlBuilder = UrlBuilder.create("");
         
         if (request != null) {
             urlBuilder.addParameterIf(request.getSymbol() != null && !request.getSymbol().trim().isEmpty(), "symbol", request.getSymbol())
                      .addParameterIf(request.getOrderId() != null && request.getOrderId() > 0, "orderId", request.getOrderId())
                      .addParameterIf(request.getStartTime() != null && request.getStartTime() > 0, "startTime", request.getStartTime())
-                     .addParameterIf(request.getEndTime() != null && request.getEndTime() > 0, "endTime", request.getEndTime());
-            
-            if (request.getLimit() != null) {
-                // Validate limit range
-                if (request.getLimit() < 1 || request.getLimit() > 1000) {
-                    throw new CoinsApiException("Limit must be between 1 and 1000");
-                }
-                urlBuilder.addParameter("limit", request.getLimit());
-            }
+                     .addParameterIf(request.getEndTime() != null && request.getEndTime() > 0, "endTime", request.getEndTime())
+                     .addParameterIf(request.getLimit() != null, "limit", request.getLimit());
         }
         
         return httpClient.get(HISTORY_ORDERS_URL, urlBuilder, new TypeReference<List<OrderResponse>>() {});
@@ -195,21 +189,8 @@ public class SpotTradingClient {
      * @throws CoinsApiException if the API call fails
      */
     public Object getOrder(GetOrderRequest request) throws CoinsApiException {
-        if (request == null) {
-            throw new CoinsApiException("Request cannot be null");
-        }
+        ValidationUtil.validate(request);
         
-        // Validate that at least one parameter is provided
-        if (request.getOrderId() == null && (request.getOrigClientOrderId() == null || request.getOrigClientOrderId().trim().isEmpty())) {
-            throw new CoinsApiException("Either orderId or origClientOrderId is required");
-        }
-        
-        // Validate orderId range if provided
-        if (request.getOrderId() != null && request.getOrderId() < 1) {
-            throw new CoinsApiException("OrderId must be greater than 0");
-        }
-        
-        // Use optimized UrlBuilder for query string construction
         UrlBuilder urlBuilder = UrlBuilder.create("")
             .addParameter("orderId", request.getOrderId())
             .addParameterIf(request.getOrigClientOrderId() != null && !request.getOrigClientOrderId().trim().isEmpty(), 
@@ -226,21 +207,8 @@ public class SpotTradingClient {
      * @throws CoinsApiException if the API call fails
      */
     public CancelOrderResponse cancelOrder(CancelOrderRequest request) throws CoinsApiException {
-        if (request == null) {
-            throw new CoinsApiException("Request cannot be null");
-        }
+        ValidationUtil.validate(request);
         
-        // Validate that at least one parameter is provided
-        if (request.getOrderId() == null && (request.getOrigClientOrderId() == null || request.getOrigClientOrderId().trim().isEmpty())) {
-            throw new CoinsApiException("Either orderId or origClientOrderId is required");
-        }
-        
-        // Validate orderId range if provided
-        if (request.getOrderId() != null && request.getOrderId() < 1) {
-            throw new CoinsApiException("OrderId must be greater than 0");
-        }
-        
-        // Use optimized UrlBuilder for query string construction
         UrlBuilder urlBuilder = UrlBuilder.create("")
             .addParameter("orderId", request.getOrderId())
             .addParameterIf(request.getOrigClientOrderId() != null && !request.getOrigClientOrderId().trim().isEmpty(), 
@@ -257,7 +225,6 @@ public class SpotTradingClient {
      * @throws CoinsApiException if the API call fails
      */
     public List<OrderResponse> getOpenOrders(OpenOrdersRequest request) throws CoinsApiException {
-        // Use optimized UrlBuilder for query string construction
         UrlBuilder urlBuilder = UrlBuilder.create("");
         
         if (request != null && request.getSymbol() != null && !request.getSymbol().trim().isEmpty()) {
@@ -275,16 +242,8 @@ public class SpotTradingClient {
      * @throws CoinsApiException if the API call fails
      */
     public List<CancelOrderResponse> cancelAllOrders(CancelAllOrdersRequest request) throws CoinsApiException {
-        if (request == null) {
-            throw new CoinsApiException("Request cannot be null");
-        }
+        ValidationUtil.validate(request);
         
-        // Validate required symbol parameter
-        if (request.getSymbol() == null || request.getSymbol().trim().isEmpty()) {
-            throw new CoinsApiException("Symbol is required");
-        }
-        
-        // Use optimized UrlBuilder for query string construction
         UrlBuilder urlBuilder = UrlBuilder.create("")
             .addParameter("symbol", request.getSymbol());
         
