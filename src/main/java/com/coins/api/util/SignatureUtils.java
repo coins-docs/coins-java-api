@@ -118,8 +118,11 @@ public class SignatureUtils {
             // Enforce cache size limit to prevent memory issues
             if (cache.size() >= MAX_CACHE_SIZE) {
                 // Remove oldest entry (simple eviction strategy)
-                cache.entrySet().iterator().next();
-                cache.entrySet().iterator().remove();
+                var iterator = cache.entrySet().iterator();
+                if (iterator.hasNext()) {
+                    iterator.next();
+                    iterator.remove();
+                }
             }
             
             cache.put(cacheKey, new WeakReference<>(mac));
@@ -178,30 +181,4 @@ public class SignatureUtils {
         return result.toString();
     }
 
-    /**
-     * Build query string from parameters for signature generation
-     *
-     * @param queryString The query string with parameters
-     * @return The formatted query string for signature
-     */
-    public static String buildSignatureString(String queryString) {
-        if (queryString == null || queryString.isEmpty()) {
-            return "";
-        }
-        
-        // Remove signature parameter if present
-        String[] params = queryString.split("&");
-        StringBuilder sb = new StringBuilder();
-        
-        for (String param : params) {
-            if (!param.startsWith("signature=")) {
-                if (sb.length() > 0) {
-                    sb.append("&");
-                }
-                sb.append(param);
-            }
-        }
-        
-        return sb.toString();
-    }
 }
