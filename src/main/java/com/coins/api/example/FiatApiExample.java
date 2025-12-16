@@ -36,9 +36,10 @@ public class FiatApiExample {
     private static final Logger log = LoggerFactory.getLogger(FiatApiExample.class);
     
     public static void main(String[] args) {
+        // Configure the API client
         CoinsApiConfig config = CoinsApiConfig.builder()
-                                              .apiKey("sN7I8WSudxSNlVJztTaZf7nfIzhdbeitZ8EWlOnn9qUJm0RvznW03DmB8IM3VTik")
-                                              .secretKey("J6ZyMS8RKPFLSm4DQ488UwzuSP26agbYax1TphnrB13QoxKUiEMOfduWXpPJYHYw")
+                                              .apiKey("Your API key")
+                                              .secretKey("Your secret key")
                                               .baseUrl("https://api.9001.pl-qa.coinsxyz.me")
                                               .recvWindow(5000)
                                               .build();
