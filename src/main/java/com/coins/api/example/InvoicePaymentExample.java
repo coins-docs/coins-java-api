@@ -22,8 +22,8 @@ public class InvoicePaymentExample {
     public static void main(String[] args) {
         // Configure the API client
         CoinsApiConfig config = CoinsApiConfig.builder()
-                                              .apiKey("yjpNCpBFzMDrQKKQUChq4YhsFwnKZiNSE4Awmqn53wUPgziaIw3OerWoxeqgh0hu")
-                                              .secretKey("sWCboo8ba1LItH2bLD1AQwGnbM9gsLspJ8AlwsoCPGLMSOi3RJ96AONhl2anSGdt")
+                                              .apiKey("Your API key")
+                                              .secretKey("Your secret key")
                                               .baseUrl("https://api.9001.pl-qa.coinsxyz.me")
                                               .recvWindow(5000)
                                               .build();
