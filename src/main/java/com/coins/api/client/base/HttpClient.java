@@ -94,6 +94,41 @@ public class HttpClient {
     }
 
     /**
+     * Execute POST request with JSON body (application/json)
+     *
+     * @param endpoint     API endpoint
+     * @param requestBody  Request body object (will be serialized to json)
+     * @param responseType Response type
+     * @return Response object
+     * @throws CoinsApiException if the API call fails
+     */
+    public <T> T postJson(String endpoint, Object requestBody, TypeReference<T> responseType) throws CoinsApiException {
+        try {
+            String jsonBody = objectMapper.writeValueAsString(requestBody);
+            String signature = SignatureUtils.generateSignature(jsonBody, config.getSecretKey());
+            logger.info("signatureData: {}", jsonBody);
+            logger.info("signature: {}", signature);
+
+            String url = config.getBaseUrl() + "/" + endpoint;
+            RequestBody body = RequestBody.create(jsonBody, JSON);
+            long timestamp = System.currentTimeMillis();
+
+            Request.Builder requestBuilder = new Request.Builder()
+                    .url(url)
+                    .post(body)
+                    .addHeader("X-COINS-APIKEY", config.getApiKey())
+                    .addHeader("timestamp", String.valueOf(timestamp))
+                    .addHeader("signature", signature)
+                    .addHeader("Content-Type", "application/json");
+            Request request = requestBuilder.build();
+
+            return executeRequest(request, responseType);
+        } catch (Exception e) {
+            throw new CoinsApiException("Error creating JSON request body: " + e.getMessage(), e);
+        }
+    }
+
+    /**
      * Execute POST request with mixed query string and URL-encoded form body
      * Based on Example 3: Mixed query string and request body from the API documentation
      * This method converts the request object to URL-encoded format for proper signature calculation

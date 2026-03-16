@@ -104,14 +104,15 @@ public class FiatClient {
     
     /**
      * Execute fiat withdrawal operations (cash out)
-     * 
+     *
      * @param request Cash out request
      * @return Cash out result
      * @throws CoinsApiException if the API call fails
      */
     public FiatCashOutResponse cashOut(FiatCashOutRequest request) throws CoinsApiException {
         ValidationUtil.validate(request);
-        APIResponse<FiatCashOutResponse> response = httpClient.postWithBody(CASH_OUT_ENDPOINT, request, new TypeReference<APIResponse<FiatCashOutResponse>>() {});
+        APIResponse<FiatCashOutResponse> response = httpClient.postJson(CASH_OUT_ENDPOINT, request, new TypeReference<>() {
+        });
         return response.getData();
     }
     
