@@ -33,8 +33,7 @@ public class ConvertOrderHistoryResponse {
         private BigDecimal targetAmount;
         private BigDecimal price;
         private String status;
-        private Long createTime;
-        private Long updateTime;
+        private String createdAt;
     }
     
     @Data
